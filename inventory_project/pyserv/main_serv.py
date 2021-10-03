@@ -62,49 +62,72 @@ class computer:
         self.price = price
         
 
+def read_from_database(search):
+    with open("C:\\Projects\\cerebrum\\cerebrum\\inventory_project\\pyserv\\test.json") as f:
+        data = json.load(f)
+        k = data.keys()
+        #print(data[search])
+        return data[search]
 
+def write_to_database(data):
+    with open("C:\\Projects\\cerebrum\\cerebrum\\inventory_project\\pyserv\\test.json", "w") as f:
+            json.dump(data, f, indent = 2)
+            print(data)
+    return print("Success!")
+
+
+        
+            
+        
+        # if first_search in k:
+        #     v = data[first_search]
+        #     for i in v:
+        #         if sec_search == "serial" or sec_search == "price":
+        #             values_search = int(values_search)
+        #             #return print(i)                   
+        #         elif sec_search in i and i[sec_search] == values_search:
+        #             return print(i)
+                               
+        # else:
+        #     print("No Valid Key")
+        
+        # print(k, v)
+#read_from_database(input())
 
 
 cam = Camera(3, "A65", 1213421212, "dummy234", "01/01/2021", "02/02/2021", "Birmingham, AL", "IN", "Mundo", "XxXxXx", 5000)
 # print(cam)
 # cam.id = 4
 # cam.model = "A35"
-def add_camera_to_inventory(camera):
-    with open("C:\\Projects\\nodejs\\inventory_project\\pyserv\\test.json") as f:
-        data = json.load(f)
-        item = data["cameras"]
-        item.append(camera.__dict__)
+# def add_camera_to_inventory(camera):
+#         item = read_from_database("cameras")
+#         item.append(camera.__dict__)
+        
         # print(item)            
-        with open("C:\\Projects\\nodejs\\inventory_project\\pyserv\\test.json", "w") as f:
-            json.dump(data, f, indent = 2)
-        print(data)
-    return print("Success!")
+        
     
-add_camera_to_inventory(cam)
+#add_camera_to_inventory(cam)
 
 
 def get_camera_from_inventory(mval, serial):    
-    with open("C:\\Projects\\nodejs\\inventory_project\\pyserv\\test.json") as f:
-        data = json.load(f)
-        item = data["cameras"]
-        for i in item:
+        for i in read_from_database("cameras"):
             if i.get("model") == mval and i.get("serial") == serial:
                 print(i)
                 return i
                 
         
         
-# get_camera_from_inventory("A65", 1212121212)
+get_camera_from_inventory(input(), int(input()))
 d2 = []
 def update_camera_info(model_value, serial, key, val):
-    with open("C:\\Projects\\nodejs\\inventory_project\\pyserv\\test.json") as f:
+    with open("C:\\Projects\\cerebrum\\cerebrum\\inventory_project\\pyserv\\test.json") as f:
         data = json.load(f)
         item = data["cameras"]
         for i in item:
             if i.get("model") == model_value and i.get("serial") == serial:
                 i[key] = val
                 d2.append(data)
-        with open("C:\\Projects\\nodejs\\inventory_project\\pyserv\\test.json", "w") as f:
+        with open("C:\\Projects\\cerebrum\\cerebrum\\inventory_project\\pyserv\\test.json", "w") as f:
             json.dump(data, f, indent = 2)
         
             

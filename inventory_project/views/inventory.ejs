@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <h1>Inventory</h1>
+    <% cameraList.forEach(camObj => { %>
+        <h4>
+            <%= camObj.model %> |
+                <%= camObj.serial %> |
+                    <span><%= camObj.status %></span> |
+                    <%= camObj.who_has %>
+        </h4>
+        <% }) %>
+
+</body>
+
+</html>

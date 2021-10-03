@@ -1,0 +1,80 @@
+{
+    "cameras": [{
+            "Id": 1,
+            "model": "A65",
+            "serial": 1212121212,
+            "mac_address": "",
+            "last_check_out": "01/01/2021",
+            "last_check_in": "02/02/2021",
+            "location": "Birmingham, AL",
+            "status": "IN",
+            "who_has": "Mundo",
+            "password": "XxXxXx",
+            "price": 5000
+        },
+        {
+            "Id": 2,
+            "model": "A50",
+            "serial": 333333333,
+            "mac_address": "",
+            "last_check_out": "03/01/2021",
+            "last_check_in": "04/02/2021",
+            "location": "Birmingham, AL",
+            "status": "OUT",
+            "who_has": "Mundo",
+            "password": "XxXxXx",
+            "price": 8000
+        },
+        {
+            "id": 3,
+            "model": "A65",
+            "serial": 1213421212,
+            "mac_address": "dummy234",
+            "status": "01/01/2021",
+            "checkoutDate": "02/02/2021",
+            "checkinDate": "Birmingham, AL",
+            "location": "IN",
+            "who_has": "Mundo",
+            "password": "XxXxXx",
+            "price": 5000
+        }
+    ],
+    "computers": [
+        {}
+    ],
+    "jobs": [{
+            "PO": "821A3S45",
+            "job_number": "123fz",
+            "company": "NASA",
+            "camera_type": [
+                "A35",
+                "A500",
+                "A700",
+                "Ax8"
+            ],
+            "camera_count": 4,
+            "cameras": [
+                {}
+            ],
+            "accessories": [
+                {}
+            ],
+            "software_modules": "ViperMAX",
+            "purchase_date": "02/10/2021",
+            "arrival_date": "05/15/2021",
+            "application": "basic alarming",
+            "testing_status": "COMPLETE",
+            "info": ""
+        },
+        {}
+    ],
+    "workers": [{
+        "Id": 1,
+        "cameras": [
+            {}
+        ],
+        "items": [
+            {}
+        ]
+    }]
+}

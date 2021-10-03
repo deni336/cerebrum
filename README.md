@@ -1,1 +1,2 @@
-# cerebrum
+# Cerebrum
+This software is designed to automate the inventory and job control process for Viper Imaging. It's intended components are the Javascript front end application, Python API and storage process and the JSON database.

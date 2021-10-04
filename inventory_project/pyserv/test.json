@@ -39,8 +39,22 @@
             "price": 5000
         }
     ],
-    "computers": [
-        {}
+    "computers": [{
+            "processor": "i7",
+            "model": "Inspiron 7373",
+            "ram": "8gb",
+            "service_tag": "3BDCY44",
+            "nic_capability": "ethernet",
+            "price": 1200
+        },
+        {
+            "processor": "i5",
+            "model": "Inspiron 7373",
+            "ram": "8gb",
+            "service_tag": "3IDCY44",
+            "nic_capability": "ethernet",
+            "price": 1200
+        }
     ],
     "jobs": [{
             "PO": "821A3S45",
@@ -70,6 +84,7 @@
     ],
     "workers": [{
         "Id": 1,
+        "name": "jacob",
         "cameras": [
             {}
         ],

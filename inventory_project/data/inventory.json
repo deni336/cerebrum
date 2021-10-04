@@ -24,19 +24,55 @@
             "who_has": "Mundo",
             "password": "XxXxXx",
             "price": 8000
+        },
+        {
+            "id": 3,
+            "model": "A65",
+            "serial": 1213421212,
+            "mac_address": "dummy234",
+            "status": "01/01/2021",
+            "checkoutDate": "02/02/2021",
+            "checkinDate": "Birmingham, AL",
+            "location": "IN",
+            "who_has": "Mundo",
+            "password": "XxXxXx",
+            "price": 5000
         }
     ],
-    "computers": [
-        {}
+    "computers": [{
+            "processor": "i7",
+            "model": "Inspiron 7373",
+            "ram": "8gb",
+            "service_tag": "3BDCY44",
+            "nic_capability": "ethernet",
+            "price": 1200
+        },
+        {
+            "processor": "i5",
+            "model": "Inspiron 7373",
+            "ram": "8gb",
+            "service_tag": "3IDCY44",
+            "nic_capability": "ethernet",
+            "price": 1200
+        }
     ],
     "jobs": [{
             "PO": "821A3S45",
             "job_number": "123fz",
             "company": "NASA",
-            "camera_type": ["A35", "A500", "A700", "Ax8"],
+            "camera_type": [
+                "A35",
+                "A500",
+                "A700",
+                "Ax8"
+            ],
             "camera_count": 4,
-            "cameras": [{}],
-            "accessories": [{}],
+            "cameras": [
+                {}
+            ],
+            "accessories": [
+                {}
+            ],
             "software_modules": "ViperMAX",
             "purchase_date": "02/10/2021",
             "arrival_date": "05/15/2021",
@@ -44,13 +80,16 @@
             "testing_status": "COMPLETE",
             "info": ""
         },
-        {
-
-        }
+        {}
     ],
     "workers": [{
         "Id": 1,
-        "cameras": [{}],
-        "items": [{}]
+        "name": "jacob",
+        "cameras": [
+            {}
+        ],
+        "items": [
+            {}
+        ]
     }]
 }

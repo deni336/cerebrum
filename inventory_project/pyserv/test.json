@@ -85,8 +85,20 @@
     "workers": [{
         "Id": 1,
         "name": "jacob",
-        "cameras": [
-            {}
+        "cameras": [{
+                "id": 3,
+                "model": "A65",
+                "serial": 1213421212,
+                "mac_address": "dummy234",
+                "status": "01/01/2021",
+                "checkoutDate": "02/02/2021",
+                "checkinDate": "Birmingham, AL",
+                "location": "IN",
+                "who_has": "jacob",
+                "password": "XxXxXx",
+                "price": 5000
+            }
+
         ],
         "items": [
             {}

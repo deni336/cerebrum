@@ -1,5 +1,9 @@
 import json
 from os import name
+import sqlite3
+
+con = sqlite3.connect("inventory.db")
+cur = con.cursor()
 
 class Camera:
         def __init__(self, id, model, serial, mac_address, status, checkoutDate, checkinDate, location, who_has, password, price, ): 
@@ -83,8 +87,8 @@ def write_to_database(data):
     # Add in backup for DB ****************************************************************
     # with open(f, "w") as fw1:
     #     json.dump(data, fw1, indent = 2)
-        
-    return print("Success!")
+    print("Success!")    
+    return data 
 
 cam = Camera(3, "A65", 1213421212, "dummy234", "01/01/2021", "02/02/2021", "Birmingham, AL", "IN", "Mundo", "XxXxXx", 5000)
 
@@ -95,7 +99,10 @@ def add_camera_to_inventory(camera):
         if camera.__dict__ in item:
             return 
         item.append(camera.__dict__)
-        return write_to_database(data)
+        
+        cur.execute("INSERT INTO cameras VALUES ({camera})")
+        #return write_to_database(data)
+add_camera_to_inventory(cam)
 
 def get_camera_from_inventory(mval, serial):    
     for i in read_from_database("cameras"):
@@ -175,7 +182,24 @@ def update_worker_info(name, key, check_item, val):
                 #         return i.addCamera(val)
                     
             # return write_to_database(data)
-update_worker_info("jacob", "cameras", True, cam)
+#update_worker_info("jacob", "cameras", True, cam)
+
+def add_camera_to_worker(camera, name):    
+    with open(f) as f1:
+        data = json.load(f1)
+        item = data["workers"]
+        for i in item:
+            if i.get("name") == name:
+                wkr = i
+                camera.checkOut(name, "Birmingham, AL")
+                cam_item = camera.__dict__
+                # cam_item["who_has"] = name   
+                wkr["cameras"].append(cam_item)
+            write_to_database(data)
+            
+
+                    
+#add_camera_to_worker(cam, "jacob")
 
 #*************************Jobs*************************
 

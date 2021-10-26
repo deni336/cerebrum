@@ -1,6 +1,8 @@
 import sqlite3
 from sqlite3 import Error
 
+database = r"C:\\Projects\\test.db"
+
 def create_connection(db_file):
     conn = None
     try:
@@ -13,6 +15,7 @@ def create_connection(db_file):
     return conn
 
 def create_database(conn):
+    conn = create_connection(database)
     conn.execute('''CREATE TABLE IF NOT EXISTS CAMERAS (ID INT PRIMARY KEY NOT NULL,
     MODEL TEXT NOT NULL,
     SERIAL_NUMBER INT NOT NULL,
@@ -53,32 +56,151 @@ def create_database(conn):
     conn.commit()
     conn.close()
 
-def create_project(conn, cam):
-    sql = "INSERT INTO cameras (ID, MODEL, SERIAL_NUMBER, MAC_ADDRESS, IS_AVAILABLE, CHECK_OUT_DATE, CHECK_IN_DATE, CAMERA_LOCATION, WHO_HAS, CAMERA_PASS, PRICE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+def create_camera(conn, camera):
+    conn = create_connection(database)    
+    sql = '''INSERT INTO cameras (ID, MODEL, SERIAL_NUMBER, MAC_ADDRESS, IS_AVAILABLE, CHECK_OUT_DATE, CHECK_IN_DATE, CAMERA_LOCATION, WHO_HAS, CAMERA_PASS, PRICE) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
     cur = conn.cursor()
-    cur.execute(sql, cam)
+    cur.execute(sql, camera)
     conn.commit()
     return cur.lastrowid
 
-def create_task(conn, task):
-    sql = "INSERT INTO tasks(name,priority,status_id,project_id,begin_date,end_date) VALUES(?,?,?,?,?,?)"
+def create_job(conn, jobs):
+    conn = create_connection(database)
+    sql = '''INSERT INTO jobs (JOB_NUMBER, COMPANY, CAMERA_TYPE, CAMERA_COUNT, CAMERAS, ACCESSORIES, SOFTWARE_MODULES, PURCHASE_DATE, ARRIVAL_DATE, ITEM_APPLICATION, TESTING_STATUS, INFO) 
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'''
     cur = conn.cursor()
-    cur.execute(sql, task)
+    cur.execute(sql, jobs)
     conn.commit()
     return cur.lastrowid
 
-def main():
-    database = r"C:\\Projects\\test.db"
-    conn =  create_connection(database)
-    with conn:
-        cam = ('Cool App', '2015-01-01', '2015-01-30')
-        id = create_project(conn, cam)
+def create_worker(conn, worker):
+    conn = create_connection(database)
+    sql = '''INSERT INTO workers(ID, WORKER_NAME, CAMERAS, ITEMS) 
+    VALUES (?,?,?,?)'''
+    cur = conn.cursor()
+    cur.execute(sql, worker)
+    conn.commit()
+    return cur.lastrowid
 
-        task_1 = ('Analyze', 1, 1, id, '2015-01-01', '2015-01-30')
-        task_2 = ('Confirm', 1, 1, id, '2015-01-01', '2015-01-30')
+def create_computer(conn, computer):
+    conn = create_connection(database)
+    sql = '''INSERT INTO computers(ID, PROCESSORS, MODEL, SERVICE_TAG, RAM, PRICE) 
+    VALUES (?,?,?,?,?,?)'''
+    cur = conn.cursor()
+    cur.execute(sql, computer)
+    conn.commit()
+    return cur.lastrowid
 
-        create_task(conn, task_1)
-        create_task(conn, task_2)
+def update_camera(conn, ucamera):
+    conn = create_connection(database)
+    sql = '''UPDATE cameras
+    SET (?) = (?)
+    WHERE (?) = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, ucamera)
+    conn.commit()
+    return cur.lastrowid
 
-if __name__ == '__main__':
-    main()
+def update_job(conn, ujob):
+    conn = create_connection(database)
+    sql = '''UPDATE jobs
+    SET (?) = (?)
+    WHERE (?) = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, ujob)
+    conn.commit()
+    return cur.lastrowid
+
+def update_worker(conn, uworker):
+    conn = create_connection(database)
+    sql = '''UPDATE workers
+    SET (?) = (?)
+    WHERE (?) = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, uworker)
+    conn.commit()
+    return cur.lastrowid
+
+def update_computer(conn, ucomputer):
+    conn = create_connection(database)
+    sql = '''UPDATE cameras
+    SET (?) = (?)
+    WHERE (?) = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, ucomputer)
+    conn.commit()
+    return cur.lastrowid
+
+def read_camera(conn, rcamera):
+    conn = create_connection(database)
+    sql = '''SELECT (?)
+    FROM cameras
+    WHERE (?) = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, rcamera)
+    return cur.lastrowid
+
+def read_job(conn, rjob):
+    conn = create_connection(database)
+    sql = '''SELECT (?)
+    FROM jobs
+    WHERE (?) = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, rjob)
+    return cur.lastrowid
+
+def read_worker(conn, rworker):
+    conn = create_connection(database)
+    sql = '''SELECT (?)
+    FROM workers
+    WHERE (?) = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, rworker)
+    return cur.lastrowid
+
+def read_computer(conn, rcomputer):
+    conn = create_connection(database)
+    sql = '''SELECT (?)
+    FROM computers
+    WHERE (?) = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, rcomputer)
+    return cur.lastrowid
+
+def delete_camera(conn, dcamera):
+    conn = create_connection(database)
+    sql = '''DELETE FROM cameras
+    WHERE ID = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, dcamera)
+    conn.commit()
+    return cur.lastrowid
+
+def delete_job(conn, djob):
+    conn = create_connection(database)
+    sql = '''DELETE FROM jobs
+    WHERE ID = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, djob)
+    conn.commit()
+    return cur.lastrowid
+
+def delete_worker(conn, dworker):
+    conn = create_connection(database)
+    sql = '''DELETE FROM workers
+    WHERE ID = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, dworker)
+    conn.commit()
+    return cur.lastrowid
+
+def delete_computer(conn, dcomputer):
+    conn = create_connection(database)
+    sql = '''DELETE FROM computers
+    WHERE ID = (?)'''
+    cur = conn.cursor()
+    cur.execute(sql, dcomputer)
+    conn.commit()
+    return cur.lastrowid
+    

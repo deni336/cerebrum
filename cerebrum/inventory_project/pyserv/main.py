@@ -1,7 +1,7 @@
 import sqlite3
 from sqlite3 import Error
-from flask import Flask
-from flask_restful import Resource, Api, reqparse
+from flask import Flask, g
+from flask_restful import Resource, Api
 import pandas as pd
 import ast
 import requests
@@ -20,6 +20,7 @@ camera4 = [4, 'A50', 3375622, 'DUMMYMAC123', 'IN', '1/21/21', '1/21/21', 'BIRMIN
 
 
 database = r"C:\\Projects\\python_projects\\cerebrum\\inventory_project\\test.db"
+
 class Inventory(Resource):
     def __init__(self):
         def create_connection(db_file):
@@ -81,8 +82,6 @@ class Inventory(Resource):
             conn.commit()
             conn.close()
 
-        create_database()
-
         def create_camera(camera):
             conn = create_connection(database)
             try:
@@ -99,11 +98,6 @@ class Inventory(Resource):
             except Error as e:
                 print(e)
             return cur.lastrowid
-        create_camera(camera1)
-        create_camera(camera2)
-        create_camera(camera3)
-        create_camera(camera4)
-
 
         def create_job(jobs):
             conn = create_connection(database)
@@ -363,6 +357,6 @@ class Inventory(Resource):
             return cur.lastrowid
 
         api.add_resource(Inventory, '/inventory')
-        
+
     if __name__ == '__main__':
         app.run() 

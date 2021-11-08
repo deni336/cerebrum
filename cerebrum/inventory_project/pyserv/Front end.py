@@ -5,6 +5,10 @@ from tkinter.ttk import Progressbar
 from tkinter import *
 from PIL import ImageTk, Image
 
+from inventory_project.pyserv.Data_process import view_camera_table
+#from Data_process import view_camera_table
+#from Data_process import *
+
 
 
 frame_styles = {"relief": "groove",
@@ -161,25 +165,7 @@ class MenuBar(tk.Menu):
         menu_file.add_command(label="Admin", command=lambda: parent.show_frame(Admin_page))
         menu_file.add_separator()
         menu_file.add_command(label="Exit Application", command=lambda: parent.Quit_application())
-
-        # menu_orders = tk.Menu(self, tearoff=0)
-        # self.add_cascade(label="Menu2", menu=menu_orders)
-
-        # menu_pricing = tk.Menu(self, tearoff=0)
-        # self.add_cascade(label="Menu3", menu=menu_pricing)
-        #menu_pricing.add_command(label="Page One", command=lambda: parent.show_frame(PageOne))
-
-        # menu_operations = tk.Menu(self, tearoff=0)
-        # self.add_cascade(label="Menu4", menu=menu_operations)
-        #menu_operations.add_command(label="Page Two", command=lambda: parent.show_frame(PageTwo))
-        # menu_positions = tk.Menu(menu_operations, tearoff=0)
-        # menu_operations.add_cascade(label="Menu5", menu=menu_positions)
-        #menu_positions.add_command(label="Page Three", command=lambda: parent.show_frame(PageThree))
-        #menu_positions.add_command(label="Page Four", command=lambda: parent.show_frame(PageFour))
-
-        # menu_help = tk.Menu(self, tearoff=0)
-        # self.add_cascade(label="Menu6", menu=menu_help)
-        # menu_help.add_command(label="Open New Window", command=lambda: parent.OpenNewWindow())
+        
 
 class FullScreenApp(object):
     def __init__(self, master, **kwargs):
@@ -257,11 +243,20 @@ class Inventory_page(GUI):  # inherits from the GUI class
         label1 = tk.Label(self.main_frame, font=("Arial", 20), text="Inventory", background="#4b4b4b", foreground="blue")
         label1.pack(side="top")
 
-        frame1 = tk.LabelFrame(self, frame_styles, text="Current Inventory Output", background="#4b4b4b")
+        frame1 = tk.LabelFrame(self, frame_styles, text="Current Inventory Output")
         frame1.place(rely=0.05, relx=0.02, height=600, width=800)
-
         frame2 = tk.LabelFrame(self, frame_styles, text="Selected Item Display")
         frame2.place(rely=0.05, relx=0.80, height=600, width=200)
+
+        button1 = ttk.Button(self.main_frame, text="Populate from Database", command=lambda: load_data())
+        button1.place(rely=0.05, relx=0.5, height=10, width=25)
+        button1.pack()
+        button2 = ttk.Button(self.main_frame, text="Clear Table", command=lambda: clear_data())
+        button2.place(rely=0.1, relx=0.5, height=10, width=25)
+        button2.pack()
+        button3 = ttk.Button(self.main_frame, text="Refresh Data", command=lambda: refresh_data())
+        button3.place(rely=0.15, relx=0.5, height=10, width=25)
+        button3.pack()
 
         # This is a treeview.
         tv1 = ttk.Treeview(frame1)
@@ -277,16 +272,20 @@ class Inventory_page(GUI):  # inherits from the GUI class
         tv1.configure(yscrollcommand=treescrolly.set)        
         treescrolly.pack(side="right", fill="y")
         
-        # # def Load_data():
-        # #     for row in pokemon_info:
-        # #         tv1.insert("", "end", values=row)
+        def load_data():
+            camera_table = view_camera_table()
+            for row in camera_table:
+                tv1.insert("", "end", values=row)
 
-        # def Refresh_data():
-        #     # Deletes the data in the current treeview and reinserts it.
-        #     tv1.delete(*tv1.get_children())  # *=splat operator
-        #     Load_data()
+        def refresh_data():
+            # Deletes the data in the current treeview and reinserts it.
+            tv1.delete(*tv1.get_children())  # *=splat operator
+            load_data()
+        
+        def clear_data():
+            tv1.delete()
 
-        # Load_data()
+        load_data()
 
 
 class Visual_page(GUI):

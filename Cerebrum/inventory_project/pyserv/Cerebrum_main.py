@@ -1,4 +1,5 @@
 from re import L
+import re
 import sqlite3, os
 from sqlite3 import Error
 from flask import Flask, g
@@ -10,9 +11,6 @@ from tkinter import ttk, Menu, font
 from tkinter.ttk import Progressbar
 from tkinter import *
 from PIL import ImageTk, Image
-
-
-
 
 frame_styles = {"relief": "groove",
                 "bd": 3, "bg": "#4b4b4b",
@@ -39,17 +37,17 @@ class ProcessControl():
         conn = create_connection(database)    
         cur = conn.cursor()
         camera_table = '''CREATE TABLE IF NOT EXISTS CAMERA
-        (ID TEXT PRIMARY KEY,
-        MODEL TEXT,
-        SERIAL_NUMBER TEXT,
-        MAC_ADDRESS TEXT,
-        IS_AVAILABLE TEXT,
-        CHECK_OUT_DATE TEXT,
-        CHECK_IN_DATE TEXT,
-        CAMERA_LOCATION TEXT,
-        WHO_HAS TEXT,
-        CAMERA_PASS TEXT,
-        PRICE TEXT);'''        
+        (ID INT PRIMARY KEY NOT NULL,
+        MODEL TEXT NOT NULL,
+        SERIAL_NUMBER TEXT NOT NULL,
+        MAC_ADDRESS TEXT NOT NULL,
+        IS_AVAILABLE TEXT NOT NULL,
+        CHECK_OUT_DATE TEXT NOT NULL,
+        CHECK_IN_DATE TEXT NOT NULL,
+        CAMERA_LOCATION TEXT NOT NULL,
+        WHO_HAS TEXT NOT NULL,
+        CAMERA_PASS TEXT NOT NULL,
+        PRICE TEXT NOT NULL);'''        
         computer_table = '''CREATE TABLE IF NOT EXISTS COMPUTER
         (ID INT PRIMARY KEY NOT NULL,
         PROCESSOR TEXT NOT NULL,
@@ -137,7 +135,7 @@ class ProcessControl():
     def create_computer(computer):
         conn = create_connection(database)
         try:
-            sql = '''INSERT INTO computer (ID, PROCESSORS, MODEL,
+            sql = '''INSERT INTO computer (ID, PROCESSOR, MODEL,
                     SERVICE_TAG, RAM, PRICE) 
                     VALUES (?,?,?,?,?,?)'''
             cur = conn.cursor()
@@ -369,7 +367,7 @@ class ProcessControl():
 
     def view_readme():
         #with open(r"C:\\Projects\\python_projects\\cerebrum\\readme.md"):
-        os.system("start "+"C:\\Projects\\python_projects\\cerebrum\\readme.md")   
+        os.system("start "+"C:\\Projects\\python_projects\\cerebrum\\readme.md")
 
 class LoginPage(tk.Tk):
     
@@ -557,7 +555,7 @@ class MyApp(tk.Tk):
             frame = F(main_frame, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(Welcome_page)
+        self.show_frame(Inventory_page)
         menubar = MenuBar(self)
         tk.Tk.config(self, menu=menubar)
 
@@ -569,7 +567,9 @@ class MyApp(tk.Tk):
         self.destroy()
 
 class GUI(tk.Frame):
+
     def __init__(self, parent):
+
         tk.Frame.__init__(self, parent)
         self.main_frame = tk.Frame(self, bg="#4b4b4b", height=1920, width=1080)
         # self.main_frame.pack_propagate(0)
@@ -578,6 +578,7 @@ class GUI(tk.Frame):
         self.main_frame.grid_columnconfigure(0, weight=1)
 
 class OpenNewWindow(GUI):
+
     def __init__(self, *args, **kwargs):
         
             tk.Tk.__init__(self, *args, **kwargs)
@@ -591,14 +592,11 @@ class OpenNewWindow(GUI):
             self.geometry("800x800")
             self.resizable(0, 0)
 
-            # frame1 = ttk.LabelFrame(main_frame, text="This is a ttk LabelFrame")
-            # frame1.pack(expand=True, fill="both")
 
-            # label1 = tk.Label(frame1, font=("Verdana", 20), text="OpenNewWindow Page")
-            # label1.pack(side="top")
-            
 class Welcome_page(GUI):
+
     def __init__(self, parent, controller):
+
         GUI.__init__(self, parent)
         
         label1 = tk.Label(self.main_frame, font=("Arial", 20), text="Welcome", background="#4b4b4b", foreground="blue")
@@ -611,34 +609,40 @@ class Welcome_page(GUI):
 
 
 class Inventory_page(GUI):  # inherits from the GUI class
+
     def __init__(self, parent, controller):
+
         GUI.__init__(self, parent)
 
         label1 = tk.Label(self.main_frame, font=("Arial", 20), text="Inventory", background="#4b4b4b", foreground="blue")
         label1.pack(side="top")
 
-        frame1 = tk.LabelFrame(self.main_frame, frame_styles, text="Current Inventory Output")
-        frame1.place(rely=0.05, relx=0.02, height=600, width=800)
+        frame1 = tk.LabelFrame(self.main_frame, frame_styles, text="Camera Database Output")
+        frame1.place(rely=0.05, relx=0.02, height=200, width=800)
         frame2 = tk.LabelFrame(self.main_frame, frame_styles, text="Selected Item Display")
-        frame2.place(rely=0.05, relx=0.82, height=600, width=200)
-        
-       
+        frame2.place(rely=0.05, relx=0.85, height=600, width=200)
+        frame3 = tk.LabelFrame(self.main_frame, frame_styles, text="Worker Database Output")
+        frame3.place(rely=0.25, relx=0.02, height=200, width=800)
+        frame4 = tk.LabelFrame(self.main_frame, frame_styles, text="Job Database Output")
+        frame4.place(rely=0.45, relx=0.02, height=200, width=800)
+        frame5 = tk.LabelFrame(self.main_frame, frame_styles, text="Computer Database Output")
+        frame5.place(rely=0.65, relx=0.02, height=200, width=800)
 
         button1 = ttk.Button(self.main_frame, text="Populate All from Database", command=lambda: load_data())
-        button1.place(rely=0.07, relx=0.65)        
+        button1.place(rely=0.07, relx=0.75)
         button2 = ttk.Button(self.main_frame, text="Clear Table", command=lambda: clear_data())
-        button2.place(rely=0.12, relx=0.65)
+        button2.place(rely=0.10, relx=0.75)
         button3 = ttk.Button(self.main_frame, text="Refresh Data", command=lambda: refresh_data())
-        button3.place(rely=0.12, relx=0.74)
+        button3.place(rely=0.10, relx=0.79)
         #Need to add in window to give parameters for "camera, worker, job, computer"
         button4 = ttk.Button(self.main_frame, text="Add Camera", command=lambda: addCameraFrame())
-        button4.place(rely=0.17, relx=0.65)
+        button4.place(rely=0.07, relx=0.45)
         def addCameraFrame():
             framebtn4 = tk.LabelFrame(self.main_frame, frame_styles, text="Input Camera Data")
-            framebtn4.place(rely=0.61, relx=0.02, height=200, width=800)            
+            framebtn4.place(rely=0.66, relx=0.54, height=200, width=800)
             modelvar = Entry(framebtn4)
             modelvar.insert(END, "Camera Model")
-            modelvar.place(rely=0.01, relx=0.01)
+            modelvar.place(rely=0.05, relx=0.01)
             modelvarg = modelvar.get()
             serialvar = Entry(framebtn4)
             serialvar.insert(END, "Serial Number")
@@ -650,7 +654,7 @@ class Inventory_page(GUI):  # inherits from the GUI class
             macvarg = macvar.get()
             availvar = Entry(framebtn4)
             availvar.insert(END, "Is Camera Available?")
-            availvar.place(rely=0.01, relx=0.20)
+            availvar.place(rely=0.05, relx=0.20)
             availvarg = availvar.get()
             dateoutvar = Entry(framebtn4)
             dateoutvar.insert(END, "Date Checked Out")
@@ -670,7 +674,7 @@ class Inventory_page(GUI):  # inherits from the GUI class
             whohasvarg = whohasvar.get()
             camerapassvar = Entry(framebtn4)
             camerapassvar.insert(END, "Camera Password")
-            camerapassvar.place(rely=0.01, relx=0.40)
+            camerapassvar.place(rely=0.05, relx=0.40)
             camerapassvarg = camerapassvar.get()
             pricevar = Entry(framebtn4)
             pricevar.insert(END, "Price")
@@ -681,46 +685,192 @@ class Inventory_page(GUI):  # inherits from the GUI class
             idvar.place(rely=0.34, relx=0.40)
             idvarg = idvar.get()
             addcam = [idvarg, modelvarg, serialvarg, macvarg, availvarg, dateoutvarg, dateinvarg,cameralocvarg, whohasvarg, camerapassvarg, pricevarg] 
-            submitbtn = ttk.Button(framebtn4, text="Submit", command=lambda: ProcessControl.create_camera(addcam))
-            submitbtn.place(rely=0.80, relx=0.80)
+            writebtn = ttk.Button(framebtn4, text="Submit", command=lambda: ProcessControl.create_camera(addcam)) 
+            writebtn.place(rely=0.80, relx=0.77)
+            closebtn = ttk.Button(framebtn4, text="Close", command=lambda: framebtn4.destroy())
+            closebtn.place(rely=0.80, relx=0.87)
             
         button5 = ttk.Button(self.main_frame, text="Add Worker", command=lambda: addWorkerFrame())
-        button5.place(rely=0.27, relx=0.65)
+        button5.place(rely=0.27, relx=0.45)
         def addWorkerFrame():
-            framebtn = tk.LabelFrame(self.main_frame, frame_styles, text="Input Camera Data")
-            framebtn.place(rely=0.80, relx=0.20, height=200, width=400)
-            variable = StringVar(framebtn)
-            variable.set("Model") # default value
-            w = OptionMenu(framebtn, variable, "A65", "A400", "A700", "A50")
-            w.place(rely=0.01, relx=0.01)
-        button6 = ttk.Button(self.main_frame, text="Add Job", command=lambda: ProcessControl.create_job())
-        button6.place(rely=0.37, relx=0.65)
-        button7 = ttk.Button(self.main_frame, text="Add Comp", command=lambda: ProcessControl.create_computer())
-        button7.place(rely=0.47, relx=0.65)
-        button8 = ttk.Button(self.main_frame, text="Update Camera", command=lambda: ProcessControl.update_camera())
-        button8.place(rely=0.17, relx=0.74)
+            framebtn5 = tk.LabelFrame(self.main_frame, frame_styles, text="Input Worker Data")
+            framebtn5.place(rely=0.66, relx=0.54, height=200, width=800)
+            idvar = Entry(framebtn5)
+            idvar.insert(END, "Worker ID")
+            idvar.place(rely=0.05, relx=0.01)
+            idvarg = idvar.get()
+            workernamevar = Entry(framebtn5)
+            workernamevar.insert(END, "Worker Name")
+            workernamevar.place(rely=0.20, relx=0.01)
+            workernamevarg = workernamevar.get()
+            wkrcamvar = Entry(framebtn5)
+            wkrcamvar.insert(END, "Cameras in use")
+            wkrcamvar.place(rely=0.34, relx=0.01)
+            wkrcamvarg = wkrcamvar.get()
+            itemsvar = Entry(framebtn5)
+            itemsvar.insert(END, "Items in use")
+            itemsvar.place(rely=0.48, relx=0.01)
+            itemsvarg = itemsvar.get()
+            addworker = [idvarg, workernamevarg, wkrcamvarg, itemsvarg]
+            writebtn = ttk.Button(framebtn5, text="Submit", command=lambda: ProcessControl.create_worker(addworker)) 
+            writebtn.place(rely=0.80, relx=0.77)
+            closebtn = ttk.Button(framebtn5, text="Close", command=lambda: framebtn5.destroy())
+            closebtn.place(rely=0.80, relx=0.87)
+
+        button6 = ttk.Button(self.main_frame, text="Add Job", command=lambda: addJobFrame())
+        button6.place(rely=0.47, relx=0.45)
+        def addJobFrame():
+            framebtn6 = tk.LabelFrame(self.main_frame, frame_styles, text="Input Job Data")
+            framebtn6.place(rely=0.66, relx=0.54, height=200, width=800)
+            jobnumvar = Entry(framebtn6)
+            jobnumvar.insert(END, "Job Number")
+            jobnumvar.place(rely=0.05, relx=0.01)
+            jobnumvarg = jobnumvar.get()
+            companyvar = Entry(framebtn6)
+            companyvar.insert(END, "Company")
+            companyvar.place(rely=0.20, relx=0.01)
+            companyvarg = companyvar.get()
+            camtypevar = Entry(framebtn6)
+            camtypevar.insert(END, "Camera Type")
+            camtypevar.place(rely=0.34, relx=0.01)
+            camtypevarg = camtypevar.get()
+            camcountvar = Entry(framebtn6)
+            camcountvar.insert(END, "Camera Count")
+            camcountvar.place(rely=0.48, relx=0.01)
+            camcountvarg = camcountvar.get()
+            camservar = Entry(framebtn6)
+            camservar.insert(END, "Camera Serial Numbers")
+            camservar.place(rely=0.05, relx=0.20)
+            camservarg = camservar.get()
+            accvar = Entry(framebtn6)
+            accvar.insert(END, "Accessories")
+            accvar.place(rely=0.20, relx=0.20)
+            accvarg = accvar.get()
+            softmodvar = Entry(framebtn6)
+            softmodvar.insert(END, "Software Modules")
+            softmodvar.place(rely=0.34, relx=0.20)
+            softmodvarg = softmodvar.get()
+            purdatevar = Entry(framebtn6)
+            purdatevar.insert(END, "Purchase Date")
+            purdatevar.place(rely=0.48, relx=0.20)
+            purdatevarg = purdatevar.get()
+            arrdatevar = Entry(framebtn6)
+            arrdatevar.insert(END, "Need By Date")
+            arrdatevar.place(rely=0.05, relx=0.39)
+            arrdatevarg = arrdatevar.get()
+            itmappvar = Entry(framebtn6)
+            itmappvar.insert(END, "Job Application")
+            itmappvar.place(rely=0.20, relx=0.39)
+            itmappvarg = itmappvar.get()
+            teststatvar = Entry(framebtn6)
+            teststatvar.insert(END, "Testing Status")
+            teststatvar.place(rely=0.34, relx=0.39)
+            teststatvarg = teststatvar.get()
+            infovar = Entry(framebtn6)
+            infovar.insert(END, "Info")
+            infovar.place(rely=0.48, relx=0.39)
+            infovarg = infovar.get()
+            addjob = [jobnumvarg, companyvarg, camtypevarg, camcountvarg, camservarg, accvarg, softmodvarg, purdatevarg, arrdatevarg, itmappvarg, teststatvarg, infovarg]
+            writebtn = ttk.Button(framebtn6, text="Submit", command=lambda: ProcessControl.create_job(addjob))
+            writebtn.place(rely=0.80, relx=0.77)
+            closebtn = ttk.Button(framebtn6, text="Close", command=lambda: framebtn6.destroy())
+            closebtn.place(rely=0.80, relx=0.87)
+        button7 = ttk.Button(self.main_frame, text="Add Comp", command=lambda: createComputerFrame())
+        button7.place(rely=0.67, relx=0.45)
+
+        def createComputerFrame():
+            framebtn7 = tk.LabelFrame(self.main_frame, frame_styles, text="Input Job Data")
+            framebtn7.place(rely=0.66, relx=0.54, height=200, width=800)
+            idvar = Entry(framebtn7)
+            idvar.insert(END, "Computer ID")
+            idvar.place(rely=0.05, relx=0.01)
+            idvarg = idvar.get()
+            procvar = Entry(framebtn7)
+            procvar.insert(END, "Processor")
+            procvar.place(rely=0.20, relx=0.01)
+            procvarg = procvar.get()
+            modvar = Entry(framebtn7)
+            modvar.insert(END, "Computer Model")
+            modvar.place(rely=0.34, relx=0.01)
+            modvarg = modvar.get()
+            sertagvar = Entry(framebtn7)
+            sertagvar.insert(END, "Service Tag")
+            sertagvar.place(rely=0.48, relx=0.01)
+            sertagvarg = sertagvar.get()
+            ramvar = Entry(framebtn7)
+            ramvar.insert(END, "RAM")
+            ramvar.place(rely=0.05, relx=0.20)
+            ramvarg = ramvar.get()
+            pricevar = Entry(framebtn7)
+            pricevar.insert(END, "Price")
+            pricevar.place(rely=0.20, relx=0.20)
+            pricevarg = pricevar.get()
+            addcomp = [idvarg, procvarg, modvarg, sertagvarg, ramvarg, pricevarg]
+            writebtn = ttk.Button(framebtn7, text="Submit", command=lambda: ProcessControl.create_computer(addcomp))
+            writebtn.place(rely=0.80, relx=0.77)
+            closebtn = ttk.Button(framebtn7, text="Close", command=lambda: framebtn7.destroy())
+            closebtn.place(rely=0.80, relx=0.87)
+
+        button8 = ttk.Button(self.main_frame, text="Update Camera", command=lambda: updateCameraFrame())
+        button8.place(rely=0.13, relx=0.45)
+        def updateCameraFrame():
+            framebtn8 = tk.LabelFrame(self.main_frame, frame_styles, text="Input Items to Change")
+            framebtn8.place(rely=0.66, relx=0.54, height=200, width=800)
+            colvar = Entry(framebtn8)
+            colvar.insert(END, "Column to Change")
+            colvar.place(rely=0.05, relx=0.01)
+            colvarg = colvar.get()
+            upitmvar = Entry(framebtn8)
+            upitmvar.insert(END, "New Data")
+            upitmvar.place(rely=0.20, relx=0.01)
+            upitmvarg = upitmvar.get()
+            wherevar = Entry(framebtn8)
+            wherevar.insert(END, "Enter Column of Item to be changed")
+            wherevar.place(rely=0.34, relx=0.01)
+            wherevarg = wherevar.get()
+            whereitemvar = Entry(framebtn8)
+            whereitemvar.insert(END, "Enter Item to searched")
+            whereitemvar.place(rely=0.48, relx=0.01)
+            whereitemvarg = whereitemvar.get()
+            updcam = [colvarg, upitmvarg, whereitemvarg, wherevarg]
+            writebtn = ttk.Button(framebtn8, text="Submit", command=lambda: ProcessControl.update_camera(updcam))
+            writebtn.place(rely=0.80, relx=0.77)
+            closebtn = ttk.Button(framebtn8, text="Close", command=lambda: framebtn8.destroy())
+            closebtn.place(rely=0.80, relx=0.87)
         button9 = ttk.Button(self.main_frame, text="Update Worker", command=lambda: ProcessControl.update_worker())
-        button9.place(rely=0.27, relx=0.74)
+        button9.place(rely=0.30, relx=0.45)
         button10 = ttk.Button(self.main_frame, text="Update Job", command=lambda: ProcessControl.update_job())
-        button10.place(rely=0.37, relx=0.74)
+        button10.place(rely=0.50, relx=0.45)
         button11 = ttk.Button(self.main_frame, text="Update Comp", command=lambda: ProcessControl.update_computer())
-        button11.place(rely=0.47, relx=0.74)
+        button11.place(rely=0.70, relx=0.45)
         button12 = ttk.Button(self.main_frame, text="Search Camera", command=lambda: ProcessControl.read_camera())
-        button12.place(rely=0.22, relx=0.65)
+        button12.place(rely=0.10, relx=0.45)
         button13 = ttk.Button(self.main_frame, text="Search Worker", command=lambda: ProcessControl.read_worker())
-        button13.place(rely=0.32, relx=0.65)
+        button13.place(rely=0.33, relx=0.45)
         button14 = ttk.Button(self.main_frame, text="Search Job", command=lambda: ProcessControl.read_job())
-        button14.place(rely=0.42, relx=0.65)
+        button14.place(rely=0.53, relx=0.45)
         button15 = ttk.Button(self.main_frame, text="Search Comp", command=lambda: ProcessControl.read_computer())
-        button15.place(rely=0.52, relx=0.65)
-        button16 = ttk.Button(self.main_frame, text="Delete Camera", command=lambda: ProcessControl.delete_camera())
-        button16.place(rely=0.22, relx=0.74)
+        button15.place(rely=0.73, relx=0.45)
+        button16 = ttk.Button(self.main_frame, text="Delete Camera", command=lambda: delCamFrame())
+        button16.place(rely=0.16, relx=0.45)
+        def delCamFrame():
+            framebtn16 = tk.LabelFrame(self.main_frame, frame_styles, text="Input Item to Delete")
+            framebtn16.place(rely=0.66, relx=0.54, height=200, width=800)
+            delidvar = Entry(framebtn16)
+            delidvar.insert(END, "Enter ID to be Deleted")
+            delidvar.place(rely=0.05, relx=0.01)
+            delidvarg = delidvar.get()
+            delcam = [delidvarg]
+            writebtn = ttk.Button(framebtn16, text="Submit", command=lambda: ProcessControl.delete_camera(delcam))
+            writebtn.place(rely=0.80, relx=0.77)
+            closebtn = ttk.Button(framebtn16, text="Close", command=lambda: framebtn16.destroy())
+            closebtn.place(rely=0.80, relx=0.87)
         button17 = ttk.Button(self.main_frame, text="Delete Worker", command=lambda: ProcessControl.delete_worker())
-        button17.place(rely=0.32, relx=0.74)
+        button17.place(rely=0.36, relx=0.45)
         button18 = ttk.Button(self.main_frame, text="Delete Job", command=lambda: ProcessControl.delete_job())
-        button18.place(rely=0.42, relx=0.74)
+        button18.place(rely=0.56, relx=0.45)
         button19 = ttk.Button(self.main_frame, text="Delete Computer", command=lambda: ProcessControl.delete_computer())
-        button19.place(rely=0.52, relx=0.74)
+        button19.place(rely=0.76, relx=0.45)
 
         # This is a treeview.
         tv1 = ttk.Treeview(frame1)
@@ -733,7 +883,46 @@ class Inventory_page(GUI):  # inherits from the GUI class
         tv1.place(relheight=1, relwidth=.995)
         treescrolly = tk.Scrollbar(frame1)
         treescrolly.configure(command=tv1.yview)
-        tv1.configure(yscrollcommand=treescrolly.set)        
+        tv1.configure(yscrollcommand=treescrolly.set)
+        treescrolly.pack(side="right", fill="y")
+
+        tv2 = ttk.Treeview(frame3)
+        column_list_account = ["ID", "Name", "Cameras in use", "Items in use"]
+        tv2['columns'] = column_list_account
+        tv2["show"] = "headings"  # removes empty column
+        for column in column_list_account:
+            tv2.heading(column, text=column)
+            tv2.column(column, width=50)
+        tv2.place(relheight=1, relwidth=.995)
+        treescrolly = tk.Scrollbar(frame3)
+        treescrolly.configure(command=tv2.yview)
+        tv2.configure(yscrollcommand=treescrolly.set)
+        treescrolly.pack(side="right", fill="y")
+
+        tv3 = ttk.Treeview(frame4)
+        column_list_account = ["Job Number", "Company", "Camera Type", "Camera Count", "Camera Serials", "Accessories", "Software Modules", "Purchase Date", "Need by Date", "Job Application", "Testing Status", "Info"]
+        tv3['columns'] = column_list_account
+        tv3["show"] = "headings"  # removes empty column
+        for column in column_list_account:
+            tv3.heading(column, text=column)
+            tv3.column(column, width=50)
+        tv3.place(relheight=1, relwidth=.995)
+        treescrolly = tk.Scrollbar(frame4)
+        treescrolly.configure(command=tv3.yview)
+        tv3.configure(yscrollcommand=treescrolly.set)
+        treescrolly.pack(side="right", fill="y")
+
+        tv4 = ttk.Treeview(frame5)
+        column_list_account = ["ID", "Processor", "Model", "Service Tag", "RAM", "Price"]
+        tv4['columns'] = column_list_account
+        tv4["show"] = "headings"  # removes empty column
+        for column in column_list_account:
+            tv4.heading(column, text=column)
+            tv4.column(column, width=50)
+        tv4.place(relheight=1, relwidth=.995)
+        treescrolly = tk.Scrollbar(frame5)
+        treescrolly.configure(command=tv4.yview)
+        tv4.configure(yscrollcommand=treescrolly.set)
         treescrolly.pack(side="right", fill="y")
         
         def load_data():
@@ -744,19 +933,25 @@ class Inventory_page(GUI):  # inherits from the GUI class
             for row in camera_table:
                 tv1.insert("", "end", values=row)
             for row in worker_table:
-                tv1.insert("", "end", values=row)
+                tv2.insert("", "end", values=row)
             for row in job_table:
-                tv1.insert("", "end", values=row)
+                tv3.insert("", "end", values=row)
             for row in computer_table:
-                tv1.insert("", "end", values=row)
+                tv4.insert("", "end", values=row)
 
         def refresh_data():
             # Deletes the data in the current treeview and reinserts it.
-            tv1.delete(*tv1.get_children())  # *=splat operator
+            tv1.delete(*tv1.get_children())
+            tv2.delete(*tv2.get_children())
+            tv3.delete(*tv3.get_children())
+            tv4.delete(*tv4.get_children())
             load_data()
         
         def clear_data():
             tv1.delete(*tv1.get_children())
+            tv2.delete(*tv2.get_children())
+            tv3.delete(*tv3.get_children())
+            tv3.delete(*tv3.get_children())
 
         
 

@@ -1,16 +1,14 @@
-from re import L
-import re
+import threading
 import sqlite3, os
 from sqlite3 import Error
-from flask import Flask, g
-from flask_restful import Resource, Api
-import pandas as pd
 import tkinter as tk
 from tkinter import messagebox, scrolledtext, filedialog
 from tkinter import ttk, Menu, font 
 from tkinter.ttk import Progressbar
 from tkinter import *
 from PIL import ImageTk, Image
+import time
+
 
 
 frameStyles = {"relief": "groove",
@@ -19,8 +17,6 @@ frameStyles = {"relief": "groove",
 
 database = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventory.db"
 databaseBackup = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventorybackup.db"
-
-cameraTable = []
 
 def createConnection(db_file):
     conn = None
@@ -36,7 +32,7 @@ class ProcessControl():
         pass
 
     def createDatabase(self):
-        conn = createConnection(database)    
+        conn = createConnection(database)            
         cur = conn.cursor()
         cameraTable = '''CREATE TABLE IF NOT EXISTS CAMERA
         (ID INT PRIMARY KEY NOT NULL,
@@ -86,8 +82,65 @@ class ProcessControl():
         conn.commit()
         conn.close()
         
-    def backupDatabase():
-        conn = createConnection(databaseBackup)
+    def createBackupDatabase():
+        conn = createConnection(databaseBackup)            
+        cur = conn.cursor()
+        cameraTable = '''CREATE TABLE IF NOT EXISTS CAMERA
+        (ID INT PRIMARY KEY NOT NULL,
+        MODEL TEXT NOT NULL,
+        SERIAL_NUMBER TEXT NOT NULL,
+        MAC_ADDRESS TEXT NOT NULL,
+        IS_AVAILABLE TEXT NOT NULL,
+        CHECK_OUT_DATE TEXT NOT NULL,
+        CHECK_IN_DATE TEXT NOT NULL,
+        CAMERA_LOCATION TEXT NOT NULL,
+        WHO_HAS TEXT NOT NULL,
+        CAMERA_PASS TEXT NOT NULL,
+        PRICE TEXT NOT NULL);'''        
+        computerTable = '''CREATE TABLE IF NOT EXISTS COMPUTER
+        (ID INT PRIMARY KEY NOT NULL,
+        PROCESSOR TEXT NOT NULL,
+        MODEL TEXT NOT NULL,
+        SERVICE_TAG TEXT NOT NULL,
+        RAM TEXT NOT NULL,
+        PRICE INT NOT NULL);'''                
+        jobTable = '''CREATE TABLE IF NOT EXISTS JOB
+        (JOB_NUMBER INT PRIMARY KEY NOT NULL,
+        COMPANY TEXT NOT NULL,
+        CAMERA_TYPE TEXT NOT NULL,
+        CAMERA_COUNT INT NOT NULL,
+        CAMERAS TEXT NOT NULL,
+        ACCESSORIES TEXT NOT NULL,
+        SOFTWARE_MODULES TEXT NOT NULL,
+        PURCHASE_DATE TEXT NOT NULL,
+        ARRIVAL_DATE TEXT NOT NULL,
+        ITEM_APPLICATION TEXT NOT NULL,
+        TESTING_STATUS TEXT NOT NULL,
+        INFO TEXT);'''        
+        workerTable = '''CREATE TABLE IF NOT EXISTS WORKER
+        (ID INT PRIMARY KEY NOT NULL,
+        WORKER_NAME TEXT NOT NULL,
+        CAMERAS TEXT NOT NULL,
+        ITEMS TEXT NOT NULL);'''        
+        cur.execute(computerTable)
+        print("Computer table created successfully")
+        cur.execute(jobTable)
+        print("Jobs table created successfully")
+        cur.execute(workerTable)
+        print("Workers table created successfully")
+        cur.execute(cameraTable)
+        print("Camera table created successfully")
+        conn.commit()
+        conn.close()
+        
+    def backupDatabase():        
+        try:
+            conn = createConnection(database)
+            conn.backup(createConnection(databaseBackup), pages=0, progress=None)
+            conn.commit()
+            conn.close()            
+        except Error as e:
+            return e            
 
     def createCamera(camera):
         conn = createConnection(database)
@@ -346,6 +399,33 @@ class ProcessControl():
 
     def viewReadme():        
         os.system("start "+"C:\\Projects\\python_projects\\cerebrum\\readme.md")
+
+class RepeatedTimer(object):
+    def __init__(self, interval, function, *args, **kwargs):
+        self._timer     = None
+        self.interval   = interval
+        self.function   = function
+        self.args       = args
+        self.kwargs     = kwargs
+        self.is_running = False
+        self.start()
+
+    def _run(self):
+        self.is_running = False
+        self.start()
+        self.function(*self.args, **self.kwargs)
+
+    def start(self):
+        if not self.is_running:
+            self._timer = threading.Timer(self.interval, self._run)
+            self._timer.start()
+            self.is_running = True
+
+    def stop(self):
+        self._timer.cancel()
+        self.is_running = False
+    
+    
 
 class LoginPage(tk.Tk):
     
@@ -1259,6 +1339,8 @@ class AdminPage(GUI):
         label1.pack(side="top")
         button1 = ttk.Button(self.mainFrame, text="Create Database", command=lambda: ProcessControl.createDatabase(self))
         button1.pack()
+        button2 = ttk.Button(self.mainFrame, text="Database Backup", command=lambda: ProcessControl.backupDatabase())
+        button2.pack()
 
 
 class ReportsPage(GUI):

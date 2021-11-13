@@ -6,6 +6,7 @@ from tkinter import messagebox, scrolledtext, filedialog
 from tkinter import ttk, Menu, font 
 from tkinter.ttk import Progressbar
 from tkinter import *
+from itertools import cycle
 from PIL import ImageTk, Image
 import time
 
@@ -82,7 +83,7 @@ class ProcessControl():
         conn.commit()
         conn.close()
         
-    def createBackupDatabase():
+    def createBackupDatabase(self):
         conn = createConnection(databaseBackup)            
         cur = conn.cursor()
         cameraTable = '''CREATE TABLE IF NOT EXISTS CAMERA
@@ -255,31 +256,41 @@ class ProcessControl():
 
     def readCamera(searchColumn, searchValue):
         conn = createConnection(database)
-        try:            
+        read = []        
+        try:
+            sql = 'SELECT * FROM CAMERA WHERE [{0}] = ?'
             cur = conn.cursor()
-            read = cur.execute('SELECT * FROM CAMERA WHERE [{0}] = ?'.format(searchColumn) (searchValue))
+            reading = cur.execute(sql.format(searchColumn), (searchValue,))
+            for i in reading:
+                read.append(i)            
             conn.close()
-            print(read)
         except Error as e:
-            print(e)
-        
+            print(e) 
+        return read       
 
     def readJob(searchColumn, searchValue):
         conn = createConnection(database)
+        read = []
         try:            
+            sql = 'SELECT * FROM JOB WHERE [{0}] = ?'
             cur = conn.cursor()
-            read = cur.execute('SELECT * FROM CAMERA WHERE [{0}] = ?'.format(searchColumn), (searchValue))
+            reading = cur.execute(sql.format(searchColumn), (searchValue,))
+            for i in reading:
+                read.append(i)            
             conn.close()
-            InventoryPage.loadSearch
         except Error as e:
             print(e)
         return read
 
     def readWorker(searchColumn, searchValue):
         conn = createConnection(database)
+        read = []
         try:            
+            sql = 'SELECT * FROM Worker WHERE [{0}] = ?'
             cur = conn.cursor()
-            read = cur.execute('SELECT * FROM CAMERA WHERE [{0}] = ?'.format(searchColumn), (searchValue))
+            reading = cur.execute(sql.format(searchColumn), (searchValue,))
+            for i in reading:
+                read.append(i)         
             conn.close()
         except Error as e:
             print(e)
@@ -287,9 +298,13 @@ class ProcessControl():
 
     def readComputer(searchColumn, searchValue):
         conn = createConnection(database)
+        read = []
         try:            
+            sql = 'SELECT * FROM COMPUTER WHERE [{0}] = ?'
             cur = conn.cursor()
-            read = cur.execute('SELECT * FROM CAMERA WHERE [{0}] = ?'.format(searchColumn), (searchValue))
+            reading = cur.execute(sql.format(searchColumn), (searchValue,))
+            for i in reading:
+                read.append(i)
             conn.close()
         except Error as e:
             print(e)
@@ -349,9 +364,7 @@ class ProcessControl():
             print("Computer deleted successfully")
         except Error as e:
             print(e)
-        return cur.lastrowid
-
-    table = ['camera', 'A65']
+        return cur.lastrowid    
 
     def viewCameraTable():
         conn = createConnection(database)
@@ -398,8 +411,10 @@ class ProcessControl():
         return jobTable
 
     def viewReadme():        
-        os.system("start "+"C:\\Projects\\python_projects\\cerebrum\\readme.md")
+        os.system("start "+"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\readme.md")
 
+
+#for later use
 class RepeatedTimer(object):
     def __init__(self, interval, function, *args, **kwargs):
         self._timer     = None
@@ -568,10 +583,10 @@ class MenuBar(tk.Menu):
 
         menu_file = tk.Menu(self, tearoff=0)
         self.add_cascade(label="Menu", menu=menu_file)
-        menu_file.add_command(label="Welcome", command=lambda: parent.showFrame(WelcomePage))
+        #menu_file.add_command(label="Welcome", command=lambda: parent.showFrame(WelcomePage))
         menu_file.add_command(label="Inventory Control", command=lambda: parent.showFrame(InventoryPage))
-        menu_file.add_command(label="Visual", command=lambda: parent.showFrame(VisualPage))
-        menu_file.add_command(label="Reports", command=lambda: parent.showFrame(ReportsPage))
+        #menu_file.add_command(label="Visual", command=lambda: parent.showFrame(VisualPage))
+        #menu_file.add_command(label="Reports", command=lambda: parent.showFrame(ReportsPage))
         menu_file.add_command(label="Admin", command=lambda: parent.showFrame(AdminPage))
         menu_file.add_separator()
         menu_file.add_command(label="Exit Application", command=lambda: parent.quitApplication())
@@ -608,7 +623,7 @@ class MyApp(tk.Tk):
         # self.resizable(0, 0) prevents the app from being resized
         self.geometry("1024x600") #fixes the applications size
         self.frames = {}
-        pages = (InventoryPage, WelcomePage, ReportsPage, VisualPage, AdminPage)
+        pages = (InventoryPage, AdminPage)
         for F in pages:
             frame = F(mainFrame, self)
             self.frames[F] = frame
@@ -651,19 +666,21 @@ class OpenNewWindow(GUI):
             self.resizable(0, 0)
 
 
-class WelcomePage(GUI):
+# class WelcomePage(GUI):
 
-    def __init__(self, parent, controller):
+#     def __init__(self, parent, controller):
 
-        GUI.__init__(self, parent)
+#         GUI.__init__(self, parent)
         
-        label1 = tk.Label(self.mainFrame, font=("Arial", 20), text="Welcome", background="#4b4b4b", foreground="blue")
-        label1.pack(side="top")
+#         label1 = tk.Label(self.mainFrame, font=("Arial", 20), text="Welcome", background="#4b4b4b", foreground="blue")
+#         label1.pack(side="top")
 
-        frame1 = tk.Frame(self, background="#4b4b4b")
-        frame1.place(rely=0.05, relx=0.02, height=600, width=800)
-        frame2 = tk.LabelFrame(self, frameStyles, text="System Info")
-        frame2.place(rely=0.05, relx=0.68, height=600, width=400)
+#         frame1 = tk.Frame(self, background="#4b4b4b")
+#         frame1.place(rely=0.05, relx=0.02, height=600, width=800)
+#         #images = ["CerebrumImage1.jpg", "CerebrumImage2.png", "CerebrumImage3.jpg"]
+#         #photos = cycle(ImageTk.PhotoImage(Image.open(image))for image in images)
+#         # imgLabel = Label(self, image="C:\\Projects\\Python_Projects\\cerebrum\\Cerebrum\\inventory_project\\pyserv\\CerebrumImage1.jpg")        
+#         # imgLabel.place(rely=0.05, relx=0.68, height=600, width=400)
 
 
 class InventoryPage(GUI):  # inherits from the GUI class
@@ -1067,9 +1084,16 @@ class InventoryPage(GUI):  # inherits from the GUI class
             closeBtn.place(rely=0.80, relx=0.87)
             
             def loadSearchCameraField():
+                read = []
                 searchColumn = searchVar1.get()
                 searchValue = searchVar2.get()
-                ProcessControl.readCamera(searchColumn, searchValue)        
+                read = ProcessControl.readCamera(searchColumn, searchValue)
+                displaySearchCamera(read)
+                
+            def displaySearchCamera(read):
+                tv1.delete(*tv1.get_children())
+                for row in read:
+                    tv1.insert("", "end", values=row)
             
         button13 = ttk.Button(self.mainFrame, text="Search Worker", command=lambda: searchWorkerFrame())
         button13.place(rely=0.33, relx=0.45)
@@ -1094,7 +1118,13 @@ class InventoryPage(GUI):  # inherits from the GUI class
             def loadSearchWorkerField():
                 searchColumn = searchVar1.get()
                 searchValue = searchVar2.get()
-                ProcessControl.readWorker(searchColumn, searchValue)
+                read = ProcessControl.readWorker(searchColumn, searchValue)
+                displaySearchWorker(read)
+                
+            def displaySearchWorker(read):
+                tv2.delete(*tv2.get_children())
+                for row in read:
+                    tv2.insert("", "end", values=row)
                 
         button14 = ttk.Button(self.mainFrame, text="Search Job", command=lambda: searchJobFrame())
         button14.place(rely=0.53, relx=0.45)
@@ -1119,7 +1149,13 @@ class InventoryPage(GUI):  # inherits from the GUI class
             def loadSearchJobField():
                 searchColumn = searchVar1.get()
                 searchValue = searchVar2.get()
-                ProcessControl.readJob(searchColumn, searchValue)
+                read = ProcessControl.readJob(searchColumn, searchValue)
+                displaySearchJob(read)
+                
+            def displaySearchJob(read):
+                tv3.delete(*tv3.get_children())
+                for row in read:
+                    tv3.insert("", "end", values=row)
                 
         button15 = ttk.Button(self.mainFrame, text="Search Comp", command=lambda: searchComputerFrame())
         button15.place(rely=0.73, relx=0.45)
@@ -1144,7 +1180,13 @@ class InventoryPage(GUI):  # inherits from the GUI class
             def loadSearchComputerField():
                 searchColumn = searchVar1.get()
                 searchValue = searchVar2.get()
-                ProcessControl.readComputer(searchColumn, searchValue)                
+                read = ProcessControl.readComputer(searchColumn, searchValue)
+                displaySearchComputer(read)
+            
+            def displaySearchComputer(read):
+                tv4.delete(*tv4.get_children())
+                for row in read:
+                    tv4.insert("", "end", values=row)             
         
         button16 = ttk.Button(self.mainFrame, text="Delete Camera", command=lambda: delCamFrame())
         button16.place(rely=0.16, relx=0.45)
@@ -1314,21 +1356,17 @@ class InventoryPage(GUI):  # inherits from the GUI class
             tv2.delete(*tv2.get_children())
             tv3.delete(*tv3.get_children())
             tv3.delete(*tv3.get_children())
+            
         
-        def displaySearchCamera(read):
-            tv1.delete(tv1.get_children())
-            for row in read:
-                tv1.insert("", "end", values=row)
-
         
 
 
-class VisualPage(GUI):
-    def __init__(self, parent, controller):
-        GUI.__init__(self, parent)
+# class VisualPage(GUI):
+#     def __init__(self, parent, controller):
+#         GUI.__init__(self, parent)
 
-        label1 = tk.Label(self.mainFrame, font=("Arial", 20), text="Visual", background="#4b4b4b", foreground="blue")
-        label1.pack(side="top")
+#         label1 = tk.Label(self.mainFrame, font=("Arial", 20), text="Visual", background="#4b4b4b", foreground="blue")
+#         label1.pack(side="top")
         
 
 class AdminPage(GUI):
@@ -1343,24 +1381,24 @@ class AdminPage(GUI):
         button2.pack()
 
 
-class ReportsPage(GUI):
-    def __init__(self, parent, controller):
-        GUI.__init__(self, parent)
+# class ReportsPage(GUI):
+#     def __init__(self, parent, controller):
+#         GUI.__init__(self, parent)
 
-        label1 = tk.Label(self.mainFrame, font=("Arial", 20), text="Reports Viewer", background="#4b4b4b", foreground="blue")
-        label1.pack(side="top")
+#         label1 = tk.Label(self.mainFrame, font=("Arial", 20), text="Reports Viewer", background="#4b4b4b", foreground="blue")
+#         label1.pack(side="top")
 
-        frame1 = tk.LabelFrame(self, frameStyles, text="Report Left", background="#4b4b4b")
-        frame1.place(rely=0.05, relx=0.02, height=600, width=500)
-        frame2 = tk.LabelFrame(self, frameStyles, text="Report Right")
-        frame2.place(rely=0.05, relx=0.60, height=600, width=500)
+#         frame1 = tk.LabelFrame(self, frameStyles, text="Report Left", background="#4b4b4b")
+#         frame1.place(rely=0.05, relx=0.02, height=600, width=500)
+#         frame2 = tk.LabelFrame(self, frameStyles, text="Report Right")
+#         frame2.place(rely=0.05, relx=0.60, height=600, width=500)
 
-        button1 = tk.Button(self.mainFrame, text="Inventory Report", command=lambda: quit())
-        button1.place(rely=0.05, relx=0.5, height=10, width=25)
-        button1.pack()
-        button2 = tk.Button(self.mainFrame, text="Purchase Orders", command=lambda: quit())
-        button2.place(rely=0.1, relx=0.5, height=10, width=25)
-        button2.pack()
+#         button1 = tk.Button(self.mainFrame, text="Inventory Report", command=lambda: quit())
+#         button1.place(rely=0.05, relx=0.5, height=10, width=25)
+#         button1.pack()
+#         button2 = tk.Button(self.mainFrame, text="Purchase Orders", command=lambda: quit())
+#         button2.place(rely=0.1, relx=0.5, height=10, width=25)
+#         button2.pack()
 
 top = LoginPage()
 top.title("Cerebrum - Login Page")

@@ -973,10 +973,10 @@ class InventoryPage(GUI):  # inherits from the GUI class
                 updateIndex = whereItmVar.get()                
                 ProcessControl.updateCamera(updateColumn, setValue, updateIndex)
             
-        button9 = ttk.Button(self.mainFrame, text="Update Worker", command=lambda: ProcessControl.updateWorker())
+        button9 = ttk.Button(self.mainFrame, text="Update Worker", command=lambda: updateWorkerFrame())
         button9.place(rely=0.30, relx=0.45)
         
-        def updateCameraFrame():
+        def updateWorkerFrame():
             frameBtn9 = tk.LabelFrame(self.mainFrame, frameStyles, text="Input Items to Change")
             frameBtn9.place(rely=0.66, relx=0.54, height=200, width=800)
             
@@ -992,16 +992,16 @@ class InventoryPage(GUI):  # inherits from the GUI class
             whereItmVar.insert(END, "Enter Item ID")
             whereItmVar.place(rely=0.34, relx=0.01)            
             
-            writeBtn = ttk.Button(frameBtn9, text="Submit", command=lambda: loadUpdateCameraField())
+            writeBtn = ttk.Button(frameBtn9, text="Submit", command=lambda: loadUpdateWorkerField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn9, text="Close", command=lambda: frameBtn9.destroy())
             closeBtn.place(rely=0.80, relx=0.87)
             
-            def loadUpdateCameraField():
+            def loadUpdateWorkerField():
                 updateColumn = colVar.get()
                 setValue = updItmVar.get()                
                 updateIndex = whereItmVar.get()                
-                ProcessControl.updateCamera(updateColumn, setValue, updateIndex)
+                ProcessControl.updateWorker(updateColumn, setValue, updateIndex)
                 
         button10 = ttk.Button(self.mainFrame, text="Update Job", command=lambda: updateJobFrame())
         button10.place(rely=0.50, relx=0.45)
@@ -1010,7 +1010,7 @@ class InventoryPage(GUI):  # inherits from the GUI class
             frameBtn10 = tk.LabelFrame(self.mainFrame, frameStyles, text="Input Items to Change")
             frameBtn10.place(rely=0.66, relx=0.54, height=200, width=800)
             
-            colVar = Entry(frameBtn10   )
+            colVar = Entry(frameBtn10)
             colVar.insert(END, "Column to Change")
             colVar.place(rely=0.05, relx=0.01)
             

@@ -1,6 +1,6 @@
 import threading
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from tkinter.ttk import Entry
 import ProcessControl as PC
 
@@ -1037,18 +1037,21 @@ class InventoryPage(GUI):
             cameraTable = PC.ItemViewProcesses.viewCameraTable(self)
             workerTable = PC.ItemViewProcesses.viewWorkerTable(self)
             jobTable = PC.ItemViewProcesses.viewJobTable(self)
-            computerTable = PC.ItemViewProcesses.viewComputerTable(self)
+            computerTable = PC.ItemViewProcesses.viewComputerTable(self)            
             for row in cameraTable:
-                tv1.insert("", "end", values=row)
+                if tv1.exists(str(row)) == False:
+                    tv1.insert("", "None", values=row)
             for row in workerTable:
-                tv2.insert("", "end", values=row)
+                if tv2.exists(str(row)) == False:
+                    tv2.insert("", "None", values=row)
             for row in jobTable:
-                tv3.insert("", "end", values=row)
+                if tv3.exists(str(row)) == False:
+                    tv3.insert("", "None", values=row)
             for row in computerTable:
-                tv4.insert("", "end", values=row)
+                if tv4.exists(str(row)) == False:            
+                    tv4.insert("", "None", values=row)
 
-        def refreshData():
-            # Deletes the data in the current treeview and reinserts it.
+        def refreshData():            
             tv1.delete(*tv1.get_children())
             tv2.delete(*tv2.get_children())
             tv3.delete(*tv3.get_children())
@@ -1059,7 +1062,7 @@ class InventoryPage(GUI):
             tv1.delete(*tv1.get_children())
             tv2.delete(*tv2.get_children())
             tv3.delete(*tv3.get_children())
-            tv3.delete(*tv3.get_children())
+            tv4.delete(*tv4.get_children())
 
 # class VisualPage(GUI):
 #     def __init__(self, parent, controller):
@@ -1091,7 +1094,7 @@ class AdminPage(GUI):
         button2.pack()
 
         def historicalChanges(self, row):
-            tv5.insert("", "end", values=row)
+            
             pass
 
         tv5 = ttk.Treeview(frame1)

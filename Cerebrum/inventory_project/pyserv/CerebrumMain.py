@@ -1,12 +1,17 @@
 import threading
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
+from tkinter import messagebox
 from tkinter.ttk import Entry
 import ProcessControl as PC
 
 frameStyles = {"relief": "groove",
                "bd": 3, "bg": "#4b4b4b",
                "fg": "blue", "font": ("Arial", 12, "bold")}
+
+database = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventory.db"
+databaseBackup = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventorybackup.db"
+history = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\history.db"
 
 # for later use
 
@@ -285,20 +290,6 @@ class OpenNewWindow(GUI):
         self.resizable(0, 0)
 
 
-# class WelcomePage(GUI):
-
-#     def __init__(self, parent, controller):
-
-#         GUI.__init__(self, parent)
-
-#         label1 = tk.Label(self.mainFrame, font=("Arial", 20),
-# text="Welcome", background="#4b4b4b", foreground="blue")
-#         label1.pack(side="top")
-
-#         frame1 = tk.Frame(self, background="#4b4b4b")
-#         frame1.place(rely=0.05, relx=0.02, height=600, width=800)
-
-
 class InventoryPage(GUI):
 
     def __init__(self, parent, controller):
@@ -326,15 +317,12 @@ class InventoryPage(GUI):
                                text="Computer Database Output")
         frame5.place(rely=0.65, relx=0.02, height=200, width=800)
 
-        button1 = ttk.Button(self.mainFrame, text="Populate All from Database",
-                             command=lambda: loadData())
-        button1.place(rely=0.07, relx=0.75)
         button2 = ttk.Button(self.mainFrame, text="Clear Table",
                              command=lambda: clear_data())
-        button2.place(rely=0.10, relx=0.75)
+        button2.place(rely=0.07, relx=0.75)
         button3 = ttk.Button(self.mainFrame, text="Refresh Data",
                              command=lambda: refreshData())
-        button3.place(rely=0.10, relx=0.79)
+        button3.place(rely=0.07, relx=0.79)
 
         button4 = ttk.Button(self.mainFrame, text="Add Camera",
                              command=lambda: addCameraFrame())
@@ -394,7 +382,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadCamCreateField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn4, text="Close",
-                                  command=lambda: frameBtn4.destroy())
+                                  command=frameBtn4.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadCamCreateField():
@@ -440,10 +428,10 @@ class InventoryPage(GUI):
             itmVar.place(rely=0.48, relx=0.01)
 
             writeBtn = ttk.Button(frameBtn5, text="Submit",
-                                  command=lambda: loadWorkerCreateField())
+                                  command=lambda: loadWorkerCreateField)
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn5, text="Close",
-                                  command=lambda: frameBtn5.destroy())
+                                  command=frameBtn5.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadWorkerCreateField():
@@ -512,10 +500,10 @@ class InventoryPage(GUI):
             infoVar.place(rely=0.48, relx=0.39)
 
             writeBtn = ttk.Button(frameBtn6, text="Submit",
-                                  command=lambda: loadJobCreateField())
+                                  command=lambda: loadJobCreateField)
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn6, text="Close",
-                                  command=lambda: frameBtn6.destroy())
+                                  command=frameBtn6.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadJobCreateField():
@@ -574,7 +562,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadComputerCreateField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn7, text="Close",
-                                  command=lambda: frameBtn7.destroy())
+                                  command=frameBtn7.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadComputerCreateField():
@@ -606,14 +594,14 @@ class InventoryPage(GUI):
             updItmVar.place(rely=0.20, relx=0.01)
 
             whereItmVar = Entry(frameBtn8)
-            whereItmVar.insert(tk.END, "Enter Item to searched")
+            whereItmVar.insert(tk.END, "Enter Item ID")
             whereItmVar.place(rely=0.34, relx=0.01)
 
             writeBtn = ttk.Button(frameBtn8, text="Submit",
                                   command=lambda: loadUpdateCameraField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn8, text="Close",
-                                  command=lambda: frameBtn8.destroy())
+                                  command=frameBtn8.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadUpdateCameraField():
@@ -648,7 +636,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadUpdateWorkerField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn9, text="Close",
-                                  command=lambda: frameBtn9.destroy())
+                                  command=frameBtn9.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadUpdateWorkerField():
@@ -683,7 +671,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadUpdateJobField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn10, text="Close",
-                                  command=lambda: frameBtn10.destroy())
+                                  command=frameBtn10.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadUpdateJobField():
@@ -718,7 +706,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadUpdateComputerField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn11, text="Close",
-                                  command=lambda: frameBtn11.destroy())
+                                  command=frameBtn11.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadUpdateComputerField():
@@ -749,7 +737,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadSearchCameraField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn12, text="Close",
-                                  command=lambda: frameBtn12.destroy())
+                                  command=frameBtn12.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadSearchCameraField():
@@ -786,7 +774,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadSearchWorkerField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn13, text="Close",
-                                  command=lambda: frameBtn13.destroy())
+                                  command=frameBtn13.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadSearchWorkerField():
@@ -822,7 +810,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadSearchJobField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn14, text="Close",
-                                  command=lambda: frameBtn14.destroy())
+                                  command=frameBtn14.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadSearchJobField():
@@ -858,7 +846,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadSearchComputerField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn15, text="Close",
-                                  command=lambda: frameBtn15.destroy())
+                                  command=frameBtn15.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadSearchComputerField():
@@ -890,7 +878,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadCamDeleteField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn16, text="Close",
-                                  command=lambda: frameBtn16.destroy())
+                                  command=frameBtn16.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadCamDeleteField():
@@ -915,7 +903,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadWorkerDeleteField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn17, text="Close",
-                                  command=lambda: frameBtn17.destroy())
+                                  command=frameBtn17.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadWorkerDeleteField():
@@ -940,7 +928,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadJobDeleteField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn18, text="Close",
-                                  command=lambda: frameBtn18.destroy())
+                                  command=frameBtn18.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadJobDeleteField():
@@ -965,7 +953,7 @@ class InventoryPage(GUI):
                                   command=lambda: loadComputerDeleteField())
             writeBtn.place(rely=0.80, relx=0.77)
             closeBtn = ttk.Button(frameBtn19, text="Close",
-                                  command=lambda: frameBtn19.destroy())
+                                  command=frameBtn19.destroy)
             closeBtn.place(rely=0.80, relx=0.87)
 
             def loadComputerDeleteField():
@@ -1034,24 +1022,21 @@ class InventoryPage(GUI):
         treeScrollY.pack(side="right", fill="y")
 
         def loadData():
-            cameraTable = PC.ItemViewProcesses.viewCameraTable(self)
-            workerTable = PC.ItemViewProcesses.viewWorkerTable(self)
-            jobTable = PC.ItemViewProcesses.viewJobTable(self)
-            computerTable = PC.ItemViewProcesses.viewComputerTable(self)            
+            cameraTable = PC.ItemViewProcesses.viewCameraTable(self, database)
+            workerTable = PC.ItemViewProcesses.viewWorkerTable(self, database)
+            jobTable = PC.ItemViewProcesses.viewJobTable(self, database)
+            computerTable = PC.ItemViewProcesses.viewComputerTable(self, database)
             for row in cameraTable:
-                if tv1.exists(str(row)) == False:
-                    tv1.insert("", "None", values=row)
+                tv1.insert("", "end", values=row)
             for row in workerTable:
-                if tv2.exists(str(row)) == False:
-                    tv2.insert("", "None", values=row)
+                tv2.insert("", "end", values=row)
             for row in jobTable:
-                if tv3.exists(str(row)) == False:
-                    tv3.insert("", "None", values=row)
+                tv3.insert("", "end", values=row)
             for row in computerTable:
-                if tv4.exists(str(row)) == False:            
-                    tv4.insert("", "None", values=row)
+                tv4.insert("", "end", values=row)
 
-        def refreshData():            
+
+        def refreshData():
             tv1.delete(*tv1.get_children())
             tv2.delete(*tv2.get_children())
             tv3.delete(*tv3.get_children())
@@ -1064,13 +1049,7 @@ class InventoryPage(GUI):
             tv3.delete(*tv3.get_children())
             tv4.delete(*tv4.get_children())
 
-# class VisualPage(GUI):
-#     def __init__(self, parent, controller):
-#         GUI.__init__(self, parent)
-
-#         label1 = tk.Label(self.mainFrame, font=("Arial", 20), text="Visual",
-# background="#4b4b4b", foreground="blue")
-#         label1.pack(side="top")
+        loadData()
 
 
 class AdminPage(GUI):
@@ -1085,49 +1064,46 @@ class AdminPage(GUI):
         frame1 = tk.LabelFrame(self, frameStyles,
                                text="Historical Changes", background="#4b4b4b")
         frame1.place(rely=0.05, relx=0.02, height=600, width=500)
-        button1 = ttk.Button(self.mainFrame, text="Create Database",
-                             command=lambda:
-                                 PC.DatabaseCreationProcesses.createDatabase(self))
+        button1 = ttk.Button(self.mainFrame,
+                             text="Create Database", command=lambda:
+                             PC.DatabaseCreationProcesses.createDatabase(self))
         button1.pack()
-        button2 = ttk.Button(self.mainFrame, text="Database Backup",
-                             command=lambda: PC.DatabaseCreationProcesses.backupDatabase(self))
+        button2 = ttk.Button(self.mainFrame,
+                             text="Database Backup", command=lambda:
+                             PC.DatabaseCreationProcesses.backupDatabase(self))
         button2.pack()
-
-        def historicalChanges(self, row):
-            
-            pass
-
+        button2 = ttk.Button(self.mainFrame,
+                             text="Restore Database", command=lambda:
+                             PC.DatabaseCreationProcesses.restoreFromBackup(self))
+        button2.pack()
+        
         tv5 = ttk.Treeview(frame1)
+        columnListAccount = ["", "", "", "", "", "", "", "", "", "", ""]
+        tv5['columns'] = columnListAccount
+        tv5["show"] = "headings" 
+        for column in columnListAccount:
+            tv5.heading(column, text=column)
+            tv5.column(column, width=50)
         tv5.place(relheight=1, relwidth=.995)
         treeScrollY = tk.Scrollbar(frame1)
         treeScrollY.configure(command=tv5.yview)
         tv5.configure(yscrollcomman=treeScrollY.set)
         treeScrollY.pack(side="right", fill="y")
 
-
-# class ReportsPage(GUI):
-#     def __init__(self, parent, controller):
-#         GUI.__init__(self, parent)
-
-#         label1 = tk.Label(self.mainFrame, font=("Arial", 20),
-#                           text="Reports Viewer", background="#4b4b4b",
-#                           foreground="blue")
-#         label1.pack(side="top")
-
-#         frame1 = tk.LabelFrame(self, frameStyles,
-#                                text="Report Left", background="#4b4b4b")
-#         frame1.place(rely=0.05, relx=0.02, height=600, width=500)
-#         frame2 = tk.LabelFrame(self, frameStyles, text="Report Right")
-#         frame2.place(rely=0.05, relx=0.60, height=600, width=500)
-
-#         button1 = tk.Button(self.mainFrame, text="Inventory Report",
-#                             command=lambda: quit())
-#         button1.place(rely=0.05, relx=0.5, height=10, width=25)
-#         button1.pack()
-#         button2 = tk.Button(self.mainFrame, text="Purchase Orders",
-#                             command=lambda: quit())
-#         button2.place(rely=0.1, relx=0.5, height=10, width=25)
-#         button2.pack()
+        def populate(self):
+            cameraTable = PC.ItemViewProcesses.viewCameraTable(self, history)
+            workerTable = PC.ItemViewProcesses.viewWorkerTable(self, history)
+            jobTable = PC.ItemViewProcesses.viewJobTable(self, history)
+            computerTable = PC.ItemViewProcesses.viewComputerTable(self, history)
+            for row in cameraTable:
+                tv5.insert("", "end", values=row)
+            for row in workerTable:
+                tv5.insert("", "end", values=row)
+            for row in jobTable:
+                tv5.insert("", "end", values=row)
+            for row in computerTable:
+                tv5.insert("", "end", values=row)
+        populate(self)
 
 
 top = LoginPage()

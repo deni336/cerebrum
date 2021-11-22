@@ -5,6 +5,7 @@ from sqlite3 import Error, Cursor
 
 database = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventory.db"
 databaseBackup = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventorybackup.db"
+history = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\history.db"
 
 
 def createConnection(db_file):
@@ -17,10 +18,11 @@ def createConnection(db_file):
 
 
 class DatabaseCreationProcesses:
-    def __init__(self, createDatabase, createBackupDatabase, backupDatabase):
+    def __init__(self, createDatabase, createBackupDatabase, backupDatabase, restoreFromBackup):
         self.createDatabase = createDatabase
         self.createBackupDatabase = createBackupDatabase
         self.backupDatabase = backupDatabase
+        self.restoreFromBackup = restoreFromBackup
 
     def createDatabase(self):
         conn = createConnection(database)
@@ -133,10 +135,28 @@ class DatabaseCreationProcesses:
             conn.close()
         except Error as e:
             return e
+    
+    def restoreFromBackup(self):
+        try:
+            conn = createConnection(databaseBackup)
+            conn.backup(createConnection(database),
+                        pages=0, progress=None)
+            conn.commit()
+            conn.close()
+        except Error as e:
+            return e
+
+    def addToHistory(self, sql):
+        conn = createConnection(history)
+        cur = conn.cursor()
+        cur.execute(sql)
+                
+
 
 class ItemCreationProcesses():
 
-    def __init__(self, createCamera, createWorker, createJob, createComputer) -> None:
+    def __init__(self, createCamera, createWorker,
+                 createJob, createComputer) -> None:
         self.createCamera = createCamera
         self.createWorker = createWorker
         self.createJob = createJob
@@ -151,16 +171,18 @@ class ItemCreationProcesses():
                     WHO_HAS, CAMERA_PASS, PRICE)
                     VALUES (?,?,?,?,?,?,?,?,?,?,?)'''
             cur = conn.cursor()
-            cur.execute(sql, camera)
+            read = cur.execute(sql, camera)
             conn.commit()
             conn.close()
             print("Camera added successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
 
     def createJob(self, job):
         conn = createConnection(database)
+        read = []
         try:
             sql = '''INSERT INTO job (JOB_NUMBER, COMPANY,
                     CAMERA_TYPE, CAMERA_COUNT, CAMERAS, ACCESSORIES,
@@ -168,10 +190,13 @@ class ItemCreationProcesses():
                     ITEM_APPLICATION, TESTING_STATUS, INFO)
                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'''
             cur = conn.cursor()
-            cur.execute(sql, job)
+            reading = cur.execute(sql, job)
+            for i in reading:
+                read.append(i)
             conn.commit()
             conn.close()
             print("Job added successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
@@ -182,10 +207,11 @@ class ItemCreationProcesses():
             sql = '''INSERT INTO worker (ID, WORKER_NAME, CAMERAS, ITEMS)
                     VALUES (?,?,?,?)'''
             cur = conn.cursor()
-            cur.execute(sql, worker)
+            read = cur.execute(sql, worker)
             conn.commit()
             conn.close()
             print("Worker added successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
@@ -197,17 +223,20 @@ class ItemCreationProcesses():
                     SERVICE_TAG, RAM, PRICE)
                     VALUES (?,?,?,?,?,?)'''
             cur = conn.cursor()
-            cur.execute(sql, computer)
+            read = cur.execute(sql, computer)
             conn.commit()
             conn.close()
             print("Computer added successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
 
+
 class ItemUpdateProcesses():
 
-    def __init__(self, updateCamera, updateWorker, updateJob, updateComputer) -> None:
+    def __init__(self, updateCamera, updateWorker,
+                 updateJob, updateComputer) -> None:
         self.updateCamera = updateCamera
         self.updateWorker = updateWorker
         self.updateJob = updateJob
@@ -216,12 +245,13 @@ class ItemUpdateProcesses():
     def updateCamera(self, updateColumn, setValue, updateIndex):
         conn = createConnection(database)
         try:
+            sql = 'UPDATE CAMERA SET [{0}] = ? WHERE ID = ?'
             cur = conn.cursor()
-            cur.execute('UPDATE CAMERA SET [{0}] = ? WHERE ID = ?'
-                        .format(updateColumn), (setValue, updateIndex))
+            read = cur.execute(sql.format(updateColumn), (setValue, updateIndex))
             conn.commit()
             conn.close()
             print("Camera updated successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
@@ -229,12 +259,13 @@ class ItemUpdateProcesses():
     def updateJob(self, updateColumn, setValue, updateIndex):
         conn = createConnection(database)
         try:
+            sql = 'UPDATE Job SET [{0}] = ? WHERE ID = ?'
             cur = conn.cursor()
-            cur.execute('UPDATE Job SET [{0}] = ? WHERE ID = ?'
-                        .format(updateColumn), (setValue, updateIndex))
+            read = cur.execute(sql.format(updateColumn), (setValue, updateIndex))
             conn.commit()
             conn.close()
             print("Job updated successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
@@ -242,12 +273,13 @@ class ItemUpdateProcesses():
     def updateWorker(self, updateColumn, setValue, updateIndex):
         conn = createConnection(database)
         try:
+            sql = 'UPDATE WORKER SET [{0}] = ? WHERE ID = ?'
             cur = conn.cursor()
-            cur.execute('UPDATE WORKER SET [{0}] = ? WHERE ID = ?'
-                        .format(updateColumn), (setValue, updateIndex))
+            read = cur.execute(sql.format(updateColumn), (setValue, updateIndex))
             conn.commit()
             conn.close()
             print("Worker updated successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
@@ -255,15 +287,17 @@ class ItemUpdateProcesses():
     def updateComputer(self, updateColumn, setValue, updateIndex):
         conn = createConnection(database)
         try:
+            sql = 'UPDATE COMPUTER SET [{0}] = ? WHERE ID = ?'
             cur = conn.cursor()
-            cur.execute('UPDATE COMPUTER SET [{0}] = ? WHERE ID = ?'
-                        .format(updateColumn), (setValue, updateIndex))
+            read = cur.execute(sql.format(updateColumn), (setValue, updateIndex))
             conn.commit()
             conn.close()
             print("Computer updated successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
+
 
 class ItemReadProcesses():
 
@@ -329,9 +363,11 @@ class ItemReadProcesses():
             print(e)
         return read
 
+
 class ItemDeleteProcesses():
 
-    def __init__(self, deleteCamera, deleteWorker, deleteJob, deleteComputer) -> None:
+    def __init__(self, deleteCamera, deleteWorker,
+                 deleteJob, deleteComputer) -> None:
         self.deleteCamera = deleteCamera
         self.deleteWorker = deleteWorker
         self.deleteJob = deleteJob
@@ -343,10 +379,11 @@ class ItemDeleteProcesses():
             sql = '''DELETE FROM CAMERA
                     WHERE ID = ?'''
             cur = conn.cursor()
-            cur.execute(sql, (dcamera))
+            read = cur.execute(sql, (dcamera))
             conn.commit()
             conn.close()
             print("Camera deleted successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
@@ -357,10 +394,11 @@ class ItemDeleteProcesses():
             sql = '''DELETE FROM job
                     WHERE ID = (?)'''
             cur = conn.cursor()
-            cur.execute(sql, djob)
+            read = cur.execute(sql, djob)
             conn.commit()
             conn.close()
             print("Job deleted successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
@@ -371,10 +409,11 @@ class ItemDeleteProcesses():
             sql = '''DELETE FROM worker
                     WHERE ID = (?)'''
             cur = conn.cursor()
-            cur.execute(sql, dworker)
+            read = cur.execute(sql, dworker)
             conn.commit()
             conn.close()
             print("Worker deleted successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
@@ -385,17 +424,20 @@ class ItemDeleteProcesses():
             sql = '''DELETE FROM computer
                     WHERE ID = (?)'''
             cur = conn.cursor()
-            cur.execute(sql, dcomputer)
+            read = cur.execute(sql, dcomputer)
             conn.commit()
             conn.close()
             print("Computer deleted successfully")
+            DatabaseCreationProcesses.addToHistory(self, read)
         except Error as e:
             print(e)
         return cur.lastrowid
-    
+
+
 class ItemViewProcesses():
 
-    def __init__(self, viewCameraTable, viewWorkerTable, viewJobTable, viewComputerTable,
+    def __init__(self, viewCameraTable, viewWorkerTable,
+                 viewJobTable, viewComputerTable,
                  viewReadme) -> None:
         self.viewCameraTable = viewCameraTable
         self.viewWorkerTable = viewWorkerTable
@@ -403,8 +445,8 @@ class ItemViewProcesses():
         self.viewComputerTable = viewComputerTable
         self.viewReadme = viewReadme
 
-    def viewCameraTable(self):
-        conn = createConnection(database)
+    def viewCameraTable(self, db):
+        conn = createConnection(db)
         sql = '''SELECT *
                 FROM camera '''
         cur = conn.cursor()
@@ -414,8 +456,8 @@ class ItemViewProcesses():
         conn.close()
         return cameraTable
 
-    def viewWorkerTable(self):
-        conn = createConnection(database)
+    def viewWorkerTable(self, db):
+        conn = createConnection(db)
         sql = '''SELECT *
                 FROM worker '''
         cur = conn.cursor()
@@ -425,8 +467,8 @@ class ItemViewProcesses():
         conn.close()
         return workerTable
 
-    def viewComputerTable(self):
-        conn = createConnection(database)
+    def viewComputerTable(self, db):
+        conn = createConnection(db)
         sql = '''SELECT *
                 FROM computer '''
         cur = conn.cursor()
@@ -436,8 +478,8 @@ class ItemViewProcesses():
         conn.close()
         return computerTable
 
-    def viewJobTable(self):
-        conn = createConnection(database)
+    def viewJobTable(self, db):
+        conn = createConnection(db)
         sql = '''SELECT *
                 FROM job '''
         cur = conn.cursor()

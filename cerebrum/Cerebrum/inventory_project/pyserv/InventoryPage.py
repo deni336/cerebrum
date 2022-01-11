@@ -1,319 +1,33 @@
-import threading
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
-from tkinter.ttk import Entry
+from tkinter import Entry
+import CerebrumMain as CM
 import ProcessControl as PC
 
-frameStyles = {"relief": "groove",
-               "bd": 3, "bg": "#4b4b4b",
-               "fg": "blue", "font": ("Arial", 12, "bold")}
-
-database = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventory.db"
-databaseBackup = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventorybackup.db"
-history = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\history.db"
-
-# for later use
-
-
-class RepeatedTimer(object):
-    def __init__(self, interval, function, *args, **kwargs):
-        self._timer = None
-        self.interval = interval
-        self.function = function
-        self.args = args
-        self.kwargs = kwargs
-        self.is_running = False
-        self.start()
-
-    def _run(self):
-        self.is_running = False
-        self.start()
-        self.function(*self.args, **self.kwargs)
-
-    def start(self):
-        if not self.is_running:
-            self._timer = threading.Timer(self.interval, self._run)
-            self._timer.start()
-            self.is_running = True
-
-    def stop(self):
-        self._timer.cancel()
-        self.is_running = False
-
-
-class LoginPage(tk.Tk):
-
-    def __init__(self, *args, **kwargs):
-
-        tk.Tk.__init__(self, *args, **kwargs)
-
-        mainFrame = tk.Frame(self, bg="#4b4b4b", height=431, width=626)
-        mainFrame.pack(fill="both", expand="true")
-
-        self.geometry("626x431")
-        self.resizable(0, 0)
-        title_styles = {"font": ("Arial", 16),
-                        "background": "#4b4b4b", "foreground": "blue"}
-
-        text_styles = {"font": ("Arial", 14),
-                       "background": "#4b4b4b",
-                       "foreground": "blue"}
-
-        frameLogin = tk.Frame(mainFrame, bg="#4b4b4b", relief="groove", bd=2)
-        frameLogin.place(rely=0.30, relx=0.17, height=130, width=400)
-
-        labelTitle = tk.Label(frameLogin, title_styles, text="Login Page")
-        labelTitle.grid(row=0, column=1, columnspan=1)
-
-        labelUser = tk.Label(frameLogin, text_styles, text="Username:")
-        labelUser.grid(row=1, column=0)
-
-        labelPw = tk.Label(frameLogin, text_styles, text="Password:")
-        labelPw.grid(row=2, column=0)
-
-        entryUser = ttk.Entry(frameLogin, width=45, cursor="xterm")
-        entryUser.grid(row=1, column=1)
-
-        entryPw = ttk.Entry(frameLogin, width=45, cursor="xterm", show="*")
-        entryPw.grid(row=2, column=1)
-
-        button = ttk.Button(frameLogin, text="Login",
-                            command=lambda: getLogin())
-        button.place(rely=0.70, relx=0.50)
-
-        signup_btn = ttk.Button(frameLogin, text="Register",
-                                command=lambda: getSignup())
-        signup_btn.place(rely=0.70, relx=0.75)
-
-        def getSignup():
-            SignupPage()
-
-        def getLogin():
-            username = entryUser.get()
-            password = entryPw.get()
-            # if your want to run the script as it is set validation = True
-            validation = validate(username, password)
-            if validation:
-                tk.messagebox.showinfo("Login Successful",
-                                       "Welcome {}".format(username))
-                root.deiconify()
-                top.destroy()
-            else:
-                tk.messagebox.showerror("Information",
-                                        '''The Username or Password you have
-                                            entered are incorrect ''')
-
-        def validate(username, password):
-            # Checks the text file for a username/password combination.
-            try:
-                with open("credentials.txt", "r") as credentials:
-                    for line in credentials:
-                        line = line.split(",")
-                        if line[1] == username and line[3] == password:
-                            return True
-                    return False
-            except FileNotFoundError:
-                print('''You need to Register first
-                         or amend Line 71 to if True:''')
-                return False
-
-
-class SignupPage(tk.Tk):
-
-    def __init__(self, *args, **kwargs):
-
-        tk.Tk.__init__(self, *args, **kwargs)
-
-        mainFrame = tk.Frame(self, bg="#4b4b4b", height=150, width=250)
-        # pack_propagate prevents the window resizing to match the widgets
-        mainFrame.pack_propagate(0)
-        mainFrame.pack(fill="both", expand="true")
-
-        self.geometry("250x150")
-        self.resizable(0, 0)
-
-        self.title("Registration")
-
-        text_styles = {"font": ("Arial", 10),
-                       "background": "#4b4b4b",
-                       "foreground": "#E1FFFF"}
-
-        labelUser = tk.Label(mainFrame, text_styles, text="New Username:")
-        labelUser.grid(row=1, column=0)
-
-        labelPw = tk.Label(mainFrame, text_styles, text="New Password:")
-        labelPw.grid(row=2, column=0)
-
-        entryUser = ttk.Entry(mainFrame, width=20, cursor="xterm")
-        entryUser.grid(row=1, column=1)
-
-        entryPw = ttk.Entry(mainFrame, width=20, cursor="xterm", show="*")
-        entryPw.grid(row=2, column=1)
-
-        button = ttk.Button(mainFrame, text="Create Account",
-                            command=lambda: signup())
-        button.grid(row=4, column=1)
-
-        def signup():
-            # Creates a text file with the Username and password
-            user = entryUser.get()
-            pw = entryPw.get()
-            validation = validate_user(user)
-            if not validation:
-                tk.messagebox.showerror("Information",
-                                        "That Username already exists")
-            else:
-                if len(pw) > 3:
-                    credentials = open("credentials.txt", "a")
-                    credentials.write(f"Username,{user},Password,{pw},\n")
-                    credentials.close()
-                    tk.messagebox.showinfo("Information",
-                                           '''Your account details
-                                              have been stored.''')
-                    SignupPage.destroy(self)
-
-                else:
-                    tk.messagebox.showerror("Information",
-                                            '''Your password needs to be
-                                               longer than 3 values.''')
-
-        def validate_user(username):
-            # Checks the text file for a username/password combination.
-            try:
-                with open("credentials.txt", "r") as credentials:
-                    for line in credentials:
-                        line = line.split(",")
-                        if line[1] == username:
-                            return False
-                return True
-            except FileNotFoundError:
-                return True
-
-
-class MenuBar(tk.Menu):
-    def __init__(self, parent):
-        tk.Menu.__init__(self, parent)
-
-        menu_file = tk.Menu(self, tearoff=0)
-        self.add_cascade(label="Menu", menu=menu_file)
-        # menu_file.add_command(label="Welcome",
-        # command=lambda: parent.showFrame(WelcomePage))
-        menu_file.add_command(label="Inventory Control",
-                              command=lambda: parent.showFrame(InventoryPage))
-        # menu_file.add_command(label="Visual",
-        # command=lambda: parent.showFrame(VisualPage))
-        # menu_file.add_command(label="Reports",
-        # command=lambda: parent.showFrame(ReportsPage))
-        menu_file.add_command(label="Admin",
-                              command=lambda: parent.showFrame(AdminPage))
-        menu_file.add_separator()
-        menu_file.add_command(label="Exit Application",
-                              command=lambda: parent.quitApplication())
-        help_file = tk.Menu(self, tearoff=0)
-        self.add_cascade(label="Help", menu=help_file)
-        help_file.add_command(label="ReadMe",
-                              command=lambda:
-                                  PC.ItemViewProcesses.viewReadme(self))
-
-
-class FullScreenApp(object):
-    def __init__(self, master, **kwargs):
-        self.master = master
-        pad = 3
-        self._geom = '200x200+0+0'
-        master.geometry("{0}x{1}+0+0".format(
-            master.winfo_screenwidth()-pad, master.winfo_screenheight()-pad))
-        master.bind('<Escape>', self.toggle_geom)
-
-    def toggle_geom(self, event):
-        geom = self.master.winfo_geometry()
-        print(geom, self._geom)
-        self.master.geometry(self._geom)
-        self._geom = geom
-
-
-class MyApp(tk.Tk):
-
-    def __init__(self, *args, **kwargs):
-
-        tk.Tk.__init__(self, *args, **kwargs)
-        mainFrame = tk.Frame(self, bg="#4b4b4b", height=1920, width=1080)
-        mainFrame.pack_propagate(0)
-        mainFrame.pack(fill="both", expand="true")
-        mainFrame.grid_rowconfigure(0, weight=1)
-        mainFrame.grid_columnconfigure(0, weight=1)
-        self.geometry("1024x600")
-        self.frames = {}
-        pages = (InventoryPage, AdminPage)
-        for F in pages:
-            frame = F(mainFrame, self)
-            self.frames[F] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
-        self.showFrame(InventoryPage)
-        menuBar = MenuBar(self)
-        tk.Tk.config(self, menu=menuBar)
-
-    def showFrame(self, name):
-        frame = self.frames[name]
-        frame.tkraise()
-
-    def quitApplication(self):
-        self.destroy()
-
-
-class GUI(tk.Frame):
-
-    def __init__(self, parent):
-
-        tk.Frame.__init__(self, parent)
-        self.mainFrame = tk.Frame(self, bg="#4b4b4b", height=1920, width=1080)
-        # self.mainFrame.pack_propagate(0)
-        self.mainFrame.pack(fill="both", expand="true")
-        self.mainFrame.grid_rowconfigure(0, weight=1)
-        self.mainFrame.grid_columnconfigure(0, weight=1)
-
-
-class OpenNewWindow(GUI):
-
-    def __init__(self, *args, **kwargs):
-
-        tk.Tk.__init__(self, *args, **kwargs)
-
-        mainFrame = tk.Frame(self)
-        mainFrame.pack_propagate(0)
-        mainFrame.pack(fill="both", expand="true")
-        mainFrame.grid_rowconfigure(0, weight=1)
-        mainFrame.grid_columnconfigure(0, weight=1)
-        self.title("Here is the Title of the Window")
-        self.geometry("800x800")
-        self.resizable(0, 0)
-
-
-class InventoryPage(GUI):
-
+class InventoryPage(CM.GUI):
+    
     def __init__(self, parent, controller):
 
-        GUI.__init__(self, parent)
+        CM.GUI.__init__(self, parent)
 
         label1 = tk.Label(self.mainFrame, font=("Arial", 20),
                           text="Inventory", background="#4b4b4b",
                           foreground="blue")
         label1.pack(side="top")
 
-        frame1 = tk.LabelFrame(self.mainFrame, frameStyles,
+        frame1 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                text="Camera Database Output")
         frame1.place(rely=0.05, relx=0.02, height=200, width=800)
-        frame2 = tk.LabelFrame(self.mainFrame, frameStyles,
+        frame2 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                text="Selected Item Display")
         frame2.place(rely=0.05, relx=0.85, height=600, width=200)
-        frame3 = tk.LabelFrame(self.mainFrame, frameStyles,
+        frame3 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                text="Worker Database Output")
         frame3.place(rely=0.25, relx=0.02, height=200, width=800)
-        frame4 = tk.LabelFrame(self.mainFrame, frameStyles,
+        frame4 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                text="Job Database Output")
         frame4.place(rely=0.45, relx=0.02, height=200, width=800)
-        frame5 = tk.LabelFrame(self.mainFrame, frameStyles,
+        frame5 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                text="Computer Database Output")
         frame5.place(rely=0.65, relx=0.02, height=200, width=800)
 
@@ -330,7 +44,7 @@ class InventoryPage(GUI):
 
         def addCameraFrame():
 
-            frameBtn4 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn4 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                       text="Input Camera Data")
             frameBtn4.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -407,7 +121,7 @@ class InventoryPage(GUI):
         button5.place(rely=0.27, relx=0.45)
 
         def addWorkerFrame():
-            frameBtn5 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn5 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                       text="Input Worker Data")
             frameBtn5.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -447,7 +161,7 @@ class InventoryPage(GUI):
         button6.place(rely=0.47, relx=0.45)
 
         def addJobFrame():
-            frameBtn6 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn6 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                       text="Input Job Data")
             frameBtn6.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -530,7 +244,7 @@ class InventoryPage(GUI):
         button7.place(rely=0.67, relx=0.45)
 
         def createComputerFrame():
-            frameBtn7 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn7 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                       text="Input Computer Data")
             frameBtn7.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -581,7 +295,7 @@ class InventoryPage(GUI):
         button8.place(rely=0.10, relx=0.45)
 
         def updateCameraFrame():
-            frameBtn8 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn8 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                       text="Input Items to Change")
             frameBtn8.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -616,7 +330,7 @@ class InventoryPage(GUI):
         button9.place(rely=0.30, relx=0.45)
 
         def updateWorkerFrame():
-            frameBtn9 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn9 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                       text="Input Items to Change")
             frameBtn9.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -651,7 +365,7 @@ class InventoryPage(GUI):
         button10.place(rely=0.50, relx=0.45)
 
         def updateJobFrame():
-            frameBtn10 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn10 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Items to Change")
             frameBtn10.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -686,7 +400,7 @@ class InventoryPage(GUI):
         button11.place(rely=0.70, relx=0.45)
 
         def updateComputerFrame():
-            frameBtn11 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn11 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Items to Change")
             frameBtn11.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -721,7 +435,7 @@ class InventoryPage(GUI):
         button12.place(rely=0.13, relx=0.45)
 
         def searchCameraFrame():
-            frameBtn12 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn12 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Search Data")
             frameBtn12.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -758,7 +472,7 @@ class InventoryPage(GUI):
         button13.place(rely=0.33, relx=0.45)
 
         def searchWorkerFrame():
-            frameBtn13 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn13 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Search Data")
             frameBtn13.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -794,7 +508,7 @@ class InventoryPage(GUI):
         button14.place(rely=0.53, relx=0.45)
 
         def searchJobFrame():
-            frameBtn14 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn14 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Search Data")
             frameBtn14.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -830,7 +544,7 @@ class InventoryPage(GUI):
         button15.place(rely=0.73, relx=0.45)
 
         def searchComputerFrame():
-            frameBtn15 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn15 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Search Data")
             frameBtn15.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -866,7 +580,7 @@ class InventoryPage(GUI):
         button16.place(rely=0.16, relx=0.45)
 
         def delCamFrame():
-            frameBtn16 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn16 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Item to Delete")
             frameBtn16.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -891,7 +605,7 @@ class InventoryPage(GUI):
         button17.place(rely=0.36, relx=0.45)
 
         def delWorkerFrame():
-            frameBtn17 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn17 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Item to Delete")
             frameBtn17.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -916,7 +630,7 @@ class InventoryPage(GUI):
         button18.place(rely=0.56, relx=0.45)
 
         def delJobFrame():
-            frameBtn18 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn18 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Item to Delete")
             frameBtn18.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -941,7 +655,7 @@ class InventoryPage(GUI):
         button19.place(rely=0.76, relx=0.45)
 
         def delComputerFrame():
-            frameBtn19 = tk.LabelFrame(self.mainFrame, frameStyles,
+            frameBtn19 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
                                        text="Input Item to Delete")
             frameBtn19.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -1022,10 +736,10 @@ class InventoryPage(GUI):
         treeScrollY.pack(side="right", fill="y")
 
         def loadData():
-            cameraTable = PC.ItemViewProcesses.viewCameraTable(self, database)
-            workerTable = PC.ItemViewProcesses.viewWorkerTable(self, database)
-            jobTable = PC.ItemViewProcesses.viewJobTable(self, database)
-            computerTable = PC.ItemViewProcesses.viewComputerTable(self, database)
+            cameraTable = PC.ItemViewProcesses.viewCameraTable(self, CM.database)
+            workerTable = PC.ItemViewProcesses.viewWorkerTable(self, CM.database)
+            jobTable = PC.ItemViewProcesses.viewJobTable(self, CM.database)
+            computerTable = PC.ItemViewProcesses.viewComputerTable(self, CM.database)
             for row in cameraTable:
                 tv1.insert("", "end", values=row)
             for row in workerTable:
@@ -1050,68 +764,3 @@ class InventoryPage(GUI):
             tv4.delete(*tv4.get_children())
 
         loadData()
-
-
-class AdminPage(GUI):
-    def __init__(self, parent, controller):
-
-        GUI.__init__(self, parent)
-
-        label1 = tk.Label(self.mainFrame, font=("Arial", 20),
-                          text="Admin", background="#4b4b4b",
-                          foreground="blue")
-        label1.pack(side="top")
-        frame1 = tk.LabelFrame(self, frameStyles,
-                               text="Historical Changes", background="#4b4b4b")
-        frame1.place(rely=0.05, relx=0.02, height=600, width=500)
-        button1 = ttk.Button(self.mainFrame,
-                             text="Create Database", command=lambda:
-                             PC.DatabaseCreationProcesses.createDatabase(self))
-        button1.pack()
-        button2 = ttk.Button(self.mainFrame,
-                             text="Database Backup", command=lambda:
-                             PC.DatabaseCreationProcesses.backupDatabase(self))
-        button2.pack()
-        button2 = ttk.Button(self.mainFrame,
-                             text="Restore Database", command=lambda:
-                             PC.DatabaseCreationProcesses.restoreFromBackup(self))
-        button2.pack()
-        
-        tv5 = ttk.Treeview(frame1)
-        columnListAccount = ["", "", "", "", "", "", "", "", "", "", ""]
-        tv5['columns'] = columnListAccount
-        tv5["show"] = "headings" 
-        for column in columnListAccount:
-            tv5.heading(column, text=column)
-            tv5.column(column, width=50)
-        tv5.place(relheight=1, relwidth=.995)
-        treeScrollY = tk.Scrollbar(frame1)
-        treeScrollY.configure(command=tv5.yview)
-        tv5.configure(yscrollcomman=treeScrollY.set)
-        treeScrollY.pack(side="right", fill="y")
-
-        def populate(self):
-            cameraTable = PC.ItemViewProcesses.viewCameraTable(self, history)
-            workerTable = PC.ItemViewProcesses.viewWorkerTable(self, history)
-            jobTable = PC.ItemViewProcesses.viewJobTable(self, history)
-            computerTable = PC.ItemViewProcesses.viewComputerTable(self, history)
-            for row in cameraTable:
-                tv5.insert("", "end", values=row)
-            for row in workerTable:
-                tv5.insert("", "end", values=row)
-            for row in jobTable:
-                tv5.insert("", "end", values=row)
-            for row in computerTable:
-                tv5.insert("", "end", values=row)
-        populate(self)
-
-
-top = LoginPage()
-top.title("Cerebrum - Login Page")
-root = MyApp()
-app = FullScreenApp(root)
-root.state('zoomed')
-root.withdraw()
-root.title("Cerebrum")
-
-root.mainloop()

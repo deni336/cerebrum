@@ -492,3 +492,7 @@ class ItemViewProcesses():
     def viewReadme(self):
         os.system('''start "+"C:\\Projects\\python_projects\\
                     cerebrum\\Cerebrum\\readme.md''')
+    
+    def viewGuide(self):
+        os.system('''start "+"C:\\Projects\\python_projects\\
+                    cerebrum\\Cerebrum\\TS_Guide.md.html''')

@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>TS_Guide.md</title><style></style></head><body id="preview">
+<h1 class="code-line" data-line-start=0 data-line-end=1><a id="Viper_Vision_Troubleshooting_Guide_0"></a>Viper Vision Troubleshooting, a Comprehensive Guide by Deni</h1>
+<p class="has-line-data" data-line-start="2" data-line-end="3">This guide is meant to be a quick reference to assist in common issues seen with PoE and thermal applications.</p>
+<h2 class="code-line" data-line-start=4 data-line-end=5><a id="Troubleshooting_101_4"></a>Troubleshooting 101</h2>
+<ul>
+<li class="has-line-data" data-line-start="6" data-line-end="8">
+<p class="has-line-data" data-line-start="6" data-line-end="7">Always verify and duplicate your problem. No troubleshooting can be done if the problem can’t be nailed down.</p>
+</li>
+<li class="has-line-data" data-line-start="8" data-line-end="10">
+<p class="has-line-data" data-line-start="8" data-line-end="9">Try and see the problem first hand. If possible, remote in and look for common issues. For example, glass causing a reflection of heat, poor camera placement, etc…</p>
+</li>
+<li class="has-line-data" data-line-start="10" data-line-end="12">
+<p class="has-line-data" data-line-start="10" data-line-end="11">Isolate the system down to its most basic form. For example, remove extra cameras and I/O’s.</p>
+</li>
+<li class="has-line-data" data-line-start="12" data-line-end="14">
+<p class="has-line-data" data-line-start="12" data-line-end="13">Start taking notes. Write down IP addresses, temp readings, etc… from the beginning to help with future findings. This is a test and you will be quizzed on all parts of your troubleshooting process.</p>
+</li>
+</ul>
+<h3 class="code-line" data-line-start=14 data-line-end=15><a id="First_steps_14"></a>First steps</h3>
+<ol>
+<li class="has-line-data" data-line-start="16" data-line-end="17">Check for windows updates and that you are using the most current version of the software.</li>
+<li class="has-line-data" data-line-start="17" data-line-end="18">Verify computer/camera IP addresses to ensure they are on the same subnet and that there are no conflictions. Tools that you can use to help with this is FLIR IP config, IPCONFIG and then ARP -a in Windows Command Prompt, EBUS Player and Viper Vision camera discovery.</li>
+<li class="has-line-data" data-line-start="18" data-line-end="19">Check camera connection state via these steps: First, open Viper Vision and try to connect to the camera. Second, ping the camera in the Windows Command Prompt by tyiping ping 000.000.000.000(camera IP). Third, using EBUS, try to view the camera image. Last, open the cameras web server to view the image.</li>
+<li class="has-line-data" data-line-start="19" data-line-end="21">On the camera web page, check the firewall and make sure it is off or that the RTSP and FLIRRESOURCE settings are on. Generally it is best to just turn off the Firewall.</li>
+</ol>
+<h3 class="code-line" data-line-start=21 data-line-end=22><a id="More_in_depth_21"></a>More in depth</h3>
+<ul>
+<li class="has-line-data" data-line-start="23" data-line-end="24">Check firmware of camera. Ensure it is the latest version.</li>
+<li class="has-line-data" data-line-start="24" data-line-end="25">Check for network driver updates.</li>
+<li class="has-line-data" data-line-start="25" data-line-end="26">Try substituting one component of the system. For example, swap cables, computers or camera.</li>
+<li class="has-line-data" data-line-start="26" data-line-end="28">Check that the switch used is not a managed switch. If it is, check the settings of the switch by entering 192.168.1.254 in a browser.</li>
+</ul>
+<h2 class="code-line" data-line-start=28 data-line-end=29><a id="Scenarios_28"></a>Scenarios</h2>
+<p class="has-line-data" data-line-start="29" data-line-end="30">Not all encompassing, just common issues.</p>
+<h3 class="code-line" data-line-start=31 data-line-end=32><a id="Incorrect_Temperature_Reading_31"></a>Incorrect Temperature Reading</h3>
+<ol>
+<li class="has-line-data" data-line-start="32" data-line-end="33">Save config, then clear and see if problem persists.</li>
+<li class="has-line-data" data-line-start="33" data-line-end="34">Check for erroneous settings. For example, emitters, EBT, Gas detection, etc…</li>
+<li class="has-line-data" data-line-start="34" data-line-end="35">Check emissivity and verify it is set to 1.</li>
+<li class="has-line-data" data-line-start="35" data-line-end="37">Check transmissivity for proper setting per application. For example, cameras in enclosures will have a different setting than cameras in the open.</li>
+</ol>
+<h3 class="code-line" data-line-start=37 data-line-end=38><a id="Adams_ModuleInput_and_Output_37"></a>Adams Module/Input and Output</h3>
+<ol>
+<li class="has-line-data" data-line-start="38" data-line-end="39">Write down the needed I/O and alarm, if required.</li>
+<li class="has-line-data" data-line-start="39" data-line-end="40">Delete I/O process.</li>
+<li class="has-line-data" data-line-start="40" data-line-end="41">Verify IP of Adams module.</li>
+<li class="has-line-data" data-line-start="41" data-line-end="42">Run Adam APAX utility and verify the I/O is functioning as advertised.</li>
+<li class="has-line-data" data-line-start="42" data-line-end="44">Rebuild the I/O process.</li>
+</ol>
+<h3 class="code-line" data-line-start=44 data-line-end=45><a id="UI_problems_44"></a>UI problems</h3>
+<p class="has-line-data" data-line-start="45" data-line-end="46">Generally when Viper Vision does not display the camera frames correctly, it can be fixed with the following steps.</p>
+<ol>
+<li class="has-line-data" data-line-start="46" data-line-end="47">Close Viper Vision.</li>
+<li class="has-line-data" data-line-start="47" data-line-end="48">At the top of the Windows File Explorer, click the view tab and check the hidden items box.</li>
+<li class="has-line-data" data-line-start="48" data-line-end="49">Navigate to the following folder using Windows File Explorer. C:\Users\Viper\AppData\Roaming\Viper Imaging\ViperVision. Under Users, select the currently logged in Windows profile.</li>
+<li class="has-line-data" data-line-start="49" data-line-end="50">Delete the ViperDockPanel.config file.</li>
+<li class="has-line-data" data-line-start="50" data-line-end="52">Reopen Viper Vision.</li>
+</ol>
+<h2 class="code-line" data-line-start=52 data-line-end=53><a id="Data_Collection_52"></a>Data Collection</h2>
+<p class="has-line-data" data-line-start="53" data-line-end="54">Things that the software team will need to properly dissect issues.</p>
+<ul>
+<li class="has-line-data" data-line-start="54" data-line-end="55">Viper Vision logs. Can be found at C:\ViperConfigData\Logs.</li>
+<li class="has-line-data" data-line-start="55" data-line-end="56">Windows Error logs. Can be found by running Event Viewer and selecting windows logs then applications. On the right, use the filter current log option to select errors. Screenshot these errors for the same time frame.</li>
+<li class="has-line-data" data-line-start="56" data-line-end="57">Troubleshooting notes. Included in these notes should be system info, hardware info, IP addresses, camera count, etc…</li>
+<li class="has-line-data" data-line-start="57" data-line-end="58">Screenshot the IPCONFIG and ARP -a Windows Command Prompt readouts.</li>
+</ul>
+</body></html>

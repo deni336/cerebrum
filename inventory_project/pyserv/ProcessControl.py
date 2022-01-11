@@ -1,11 +1,12 @@
 import sqlite3
+import webbrowser
 import os
 from sqlite3 import Error, Cursor
 
 
-database = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventory.db"
-databaseBackup = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\inventorybackup.db"
-history = r"C:\\Projects\\python_projects\\cerebrum\\Cerebrum\\inventory_project\\history.db"
+database = r"C:\\Projects\\python_projects\\cerebrum\\inventory_project\\inventory.db"
+databaseBackup = r"C:\\Projects\\python_projects\\cerebrum\\inventory_project\\inventorybackup.db"
+history = r"C:\\Projects\\python_projects\\cerebrum\\inventory_project\\history.db"
 
 
 def createConnection(db_file):
@@ -490,9 +491,7 @@ class ItemViewProcesses():
         return jobTable
 
     def viewReadme(self):
-        os.system('''start "+"C:\\Projects\\python_projects\\
-                    cerebrum\\Cerebrum\\readme.md''')
+        webbrowser.open('file://' + os.path.realpath('C:\\Projects\\python_projects\\cerebrum\\readMe.html'))
     
     def viewGuide(self):
-        os.system('''start "+"C:\\Projects\\python_projects\\
-                    cerebrum\\Cerebrum\\TS_Guide.md.html''')
+        webbrowser.open('file://' + os.path.realpath('C:\\Projects\\python_projects\\cerebrum\\TS_guide.html'))

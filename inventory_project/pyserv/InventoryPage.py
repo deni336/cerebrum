@@ -1,33 +1,33 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import Entry
-import CerebrumMain as CM
 import ProcessControl as PC
+import GUI as G
 
-class InventoryPage(CM.GUI):
+class InventoryPage(G.GUI):
     
     def __init__(self, parent, controller):
 
-        CM.GUI.__init__(self, parent)
+        G.GUI.__init__(self, parent)
 
         label1 = tk.Label(self.mainFrame, font=("Arial", 20),
                           text="Inventory", background="#4b4b4b",
                           foreground="blue")
         label1.pack(side="top")
 
-        frame1 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+        frame1 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                text="Camera Database Output")
         frame1.place(rely=0.05, relx=0.02, height=200, width=800)
-        frame2 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+        frame2 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                text="Selected Item Display")
         frame2.place(rely=0.05, relx=0.85, height=600, width=200)
-        frame3 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+        frame3 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                text="Worker Database Output")
         frame3.place(rely=0.25, relx=0.02, height=200, width=800)
-        frame4 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+        frame4 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                text="Job Database Output")
         frame4.place(rely=0.45, relx=0.02, height=200, width=800)
-        frame5 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+        frame5 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                text="Computer Database Output")
         frame5.place(rely=0.65, relx=0.02, height=200, width=800)
 
@@ -44,7 +44,7 @@ class InventoryPage(CM.GUI):
 
         def addCameraFrame():
 
-            frameBtn4 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn4 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                       text="Input Camera Data")
             frameBtn4.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -121,7 +121,7 @@ class InventoryPage(CM.GUI):
         button5.place(rely=0.27, relx=0.45)
 
         def addWorkerFrame():
-            frameBtn5 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn5 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                       text="Input Worker Data")
             frameBtn5.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -161,7 +161,7 @@ class InventoryPage(CM.GUI):
         button6.place(rely=0.47, relx=0.45)
 
         def addJobFrame():
-            frameBtn6 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn6 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                       text="Input Job Data")
             frameBtn6.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -244,7 +244,7 @@ class InventoryPage(CM.GUI):
         button7.place(rely=0.67, relx=0.45)
 
         def createComputerFrame():
-            frameBtn7 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn7 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                       text="Input Computer Data")
             frameBtn7.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -295,7 +295,7 @@ class InventoryPage(CM.GUI):
         button8.place(rely=0.10, relx=0.45)
 
         def updateCameraFrame():
-            frameBtn8 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn8 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                       text="Input Items to Change")
             frameBtn8.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -330,7 +330,7 @@ class InventoryPage(CM.GUI):
         button9.place(rely=0.30, relx=0.45)
 
         def updateWorkerFrame():
-            frameBtn9 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn9 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                       text="Input Items to Change")
             frameBtn9.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -365,7 +365,7 @@ class InventoryPage(CM.GUI):
         button10.place(rely=0.50, relx=0.45)
 
         def updateJobFrame():
-            frameBtn10 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn10 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Items to Change")
             frameBtn10.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -400,7 +400,7 @@ class InventoryPage(CM.GUI):
         button11.place(rely=0.70, relx=0.45)
 
         def updateComputerFrame():
-            frameBtn11 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn11 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Items to Change")
             frameBtn11.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -435,7 +435,7 @@ class InventoryPage(CM.GUI):
         button12.place(rely=0.13, relx=0.45)
 
         def searchCameraFrame():
-            frameBtn12 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn12 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Search Data")
             frameBtn12.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -472,7 +472,7 @@ class InventoryPage(CM.GUI):
         button13.place(rely=0.33, relx=0.45)
 
         def searchWorkerFrame():
-            frameBtn13 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn13 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Search Data")
             frameBtn13.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -508,7 +508,7 @@ class InventoryPage(CM.GUI):
         button14.place(rely=0.53, relx=0.45)
 
         def searchJobFrame():
-            frameBtn14 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn14 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Search Data")
             frameBtn14.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -544,7 +544,7 @@ class InventoryPage(CM.GUI):
         button15.place(rely=0.73, relx=0.45)
 
         def searchComputerFrame():
-            frameBtn15 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn15 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Search Data")
             frameBtn15.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -580,7 +580,7 @@ class InventoryPage(CM.GUI):
         button16.place(rely=0.16, relx=0.45)
 
         def delCamFrame():
-            frameBtn16 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn16 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Item to Delete")
             frameBtn16.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -605,7 +605,7 @@ class InventoryPage(CM.GUI):
         button17.place(rely=0.36, relx=0.45)
 
         def delWorkerFrame():
-            frameBtn17 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn17 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Item to Delete")
             frameBtn17.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -630,7 +630,7 @@ class InventoryPage(CM.GUI):
         button18.place(rely=0.56, relx=0.45)
 
         def delJobFrame():
-            frameBtn18 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn18 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Item to Delete")
             frameBtn18.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -655,7 +655,7 @@ class InventoryPage(CM.GUI):
         button19.place(rely=0.76, relx=0.45)
 
         def delComputerFrame():
-            frameBtn19 = tk.LabelFrame(self.mainFrame, CM.frameStyles,
+            frameBtn19 = tk.LabelFrame(self.mainFrame, G.frameStyles,
                                        text="Input Item to Delete")
             frameBtn19.place(rely=0.66, relx=0.54, height=200, width=800)
 
@@ -736,10 +736,10 @@ class InventoryPage(CM.GUI):
         treeScrollY.pack(side="right", fill="y")
 
         def loadData():
-            cameraTable = PC.ItemViewProcesses.viewCameraTable(self, CM.database)
-            workerTable = PC.ItemViewProcesses.viewWorkerTable(self, CM.database)
-            jobTable = PC.ItemViewProcesses.viewJobTable(self, CM.database)
-            computerTable = PC.ItemViewProcesses.viewComputerTable(self, CM.database)
+            cameraTable = PC.ItemViewProcesses.viewCameraTable(self, PC.database)
+            workerTable = PC.ItemViewProcesses.viewWorkerTable(self, PC.database)
+            jobTable = PC.ItemViewProcesses.viewJobTable(self, PC.database)
+            computerTable = PC.ItemViewProcesses.viewComputerTable(self, PC.database)
             for row in cameraTable:
                 tv1.insert("", "end", values=row)
             for row in workerTable:

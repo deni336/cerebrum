@@ -10,6 +10,7 @@ import InventoryPage as InvPg
 import TroubleshootingPage as TP
 import AdminPage as AP
 import ProcessControl as PC
+import WebServer as WS
 
 
 # for later use
@@ -199,17 +200,15 @@ class MenuBar(tk.Menu):
         # menu_file.add_command(label="Welcome",
         # command=lambda: parent.showFrame(WelcomePage))
         menu_file.add_command(label="Inventory Control",
-                              command=lambda: parent.showFrame(InvPg.InventoryPage))
-        # menu_file.add_command(label="Visual",
-        # command=lambda: parent.showFrame(VisualPage))
-        # menu_file.add_command(label="Reports",
-        # command=lambda: parent.showFrame(ReportsPage))
+                              command=lambda: parent.showFrame(InvPg.InventoryPage))        
         menu_file.add_command(label="Admin",
                               command=lambda: parent.showFrame(AP.AdminPage))
         menu_file.add_command(label="Troubleshooting",
                               command=lambda: parent.showFrame(TP.TroubleshootingPage))
         menu_file.add_command(label="Camera Viewer",
                               command=lambda: parent.showFrame(CV.CameraViewer))
+        menu_file.add_command(label="Web Server",
+                              command=lambda: WS.MyServer.do_GET(self))
         menu_file.add_separator()
         menu_file.add_command(label="Exit Application",
                               command=lambda: parent.quitApplication())
@@ -221,7 +220,6 @@ class MenuBar(tk.Menu):
         help_file.add_command(label="ReadMe",
                               command=lambda:
                                   PC.ItemViewProcesses.viewReadme(self))
-
 
 class FullScreenApp(object):
     def __init__(self, master, **kwargs):
@@ -237,7 +235,6 @@ class FullScreenApp(object):
         print(geom, self._geom)
         self.master.geometry(self._geom)
         self._geom = geom
-
 
 class MyApp(tk.Tk):
 

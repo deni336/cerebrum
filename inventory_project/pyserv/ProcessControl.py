@@ -2,6 +2,7 @@ import sqlite3
 import webbrowser
 import os
 from sqlite3 import Error, Cursor
+import WebServer as WB
 
 
 database = r"C:\\Projects\\python_projects\\cerebrum\\inventory_project\\inventory.db"
@@ -495,3 +496,18 @@ class ItemViewProcesses():
     
     def viewGuide(self):
         webbrowser.open('file://' + os.path.realpath('C:\\Projects\\python_projects\\cerebrum\\TS_guide.html'))
+
+    def openEBUS(Self):
+        os.startfile('C:/Program Files/Pleora Technologies Inc/eBUS Player/EBUSPlayer64.exe')
+        
+    def openEventViewer(Self):
+        os.startfile('C:/Program Files/Pleora Technologies Inc/eBUS Player/EBUSPlayer64.exe')
+        
+class MainProcesses:
+    
+    def __init__(self, parent, shutdownProcess) -> None:
+        self.shutdownProcess = shutdownProcess
+        
+    def shutdownProcess(self):
+        WB.webServer.server_close()
+            

@@ -1,16 +1,12 @@
 import threading
-import os
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.constants import NO
-import CameraViewer as CV
 import GUI as G
 import InventoryPage as InvPg
-import TroubleshootingPage as TP
 import AdminPage as AP
 import ProcessControl as PC
-import WebServer as WS
 
 
 # for later use
@@ -203,12 +199,6 @@ class MenuBar(tk.Menu):
                               command=lambda: parent.showFrame(InvPg.InventoryPage))        
         menu_file.add_command(label="Admin",
                               command=lambda: parent.showFrame(AP.AdminPage))
-        menu_file.add_command(label="Troubleshooting",
-                              command=lambda: parent.showFrame(TP.TroubleshootingPage))
-        menu_file.add_command(label="Camera Viewer",
-                              command=lambda: parent.showFrame(CV.CameraViewer))
-        menu_file.add_command(label="Web Server",
-                              command=lambda: WS.MyServer.do_GET(self))
         menu_file.add_separator()
         menu_file.add_command(label="Exit Application",
                               command=lambda: parent.quitApplication())
@@ -220,6 +210,7 @@ class MenuBar(tk.Menu):
         help_file.add_command(label="ReadMe",
                               command=lambda:
                                   PC.ItemViewProcesses.viewReadme(self))
+
 
 class FullScreenApp(object):
     def __init__(self, master, **kwargs):
@@ -236,6 +227,7 @@ class FullScreenApp(object):
         self.master.geometry(self._geom)
         self._geom = geom
 
+
 class MyApp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -248,7 +240,7 @@ class MyApp(tk.Tk):
         mainFrame.grid_columnconfigure(0, weight=1)
         self.geometry("1024x600")
         self.frames = {}
-        pages = (InvPg.InventoryPage, AP.AdminPage, TP.TroubleshootingPage, CV.CameraViewer)
+        pages = (InvPg.InventoryPage, AP.AdminPage)
         for F in pages:
             frame = F(mainFrame, self)
             self.frames[F] = frame
@@ -263,8 +255,6 @@ class MyApp(tk.Tk):
 
     def quitApplication(self):
         self.destroy()
-
-
 
 
 class OpenNewWindow(G.GUI):
